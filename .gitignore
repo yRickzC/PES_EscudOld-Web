@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.astro/
+# Saída local do Graphify
+graphify-out/

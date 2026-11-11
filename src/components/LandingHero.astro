@@ -1,0 +1,243 @@
+---
+import ImagePlaceholder from './ImagePlaceholder.astro';
+import { useTranslations, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const t = useTranslations(Astro.props.locale);
+const previewExamples = [
+  { message: t('previewFamilyMessage'), side: 'left', top: '10%', offset: '0.25rem', tilt: '-6deg' },
+  { message: t('previewBankMessage'), side: 'right', top: '35%', offset: '1rem', tilt: '5deg' },
+  { message: t('previewPrizeMessage'), side: 'left', top: '43%', offset: '1.25rem', tilt: '3deg' },
+  { message: t('previewDeliveryMessage'), side: 'right', top: '67%', offset: '0.25rem', tilt: '-4deg' },
+  { message: t('previewCodeMessage'), side: 'left', top: '73%', offset: '0.5rem', tilt: '-3deg' },
+  { message: t('previewMessage'), side: 'right', top: '6%', offset: '0.75rem', tilt: '6deg' },
+];
+---
+
+<section class="hero relative isolate" aria-labelledby="hero-title">
+  <div class="hero-light pointer-events-none absolute inset-x-0 -top-36 -z-10 h-[44rem] overflow-hidden" aria-hidden="true"></div>
+
+  <div class="mx-auto max-w-5xl px-5 pt-14 text-center sm:px-8 sm:pt-22 lg:pt-25">
+    <h1 id="hero-title" class="text-[clamp(2.5rem,7.4vw,5.5rem)] leading-[0.99] font-medium tracking-[-0.06em] text-on-surface">
+      {t('titleFirst')} <span class="block">{t('titleSecond')}</span>
+    </h1>
+    <p class="mx-auto mt-6 max-w-[34rem] text-base leading-relaxed text-on-surface-variant sm:text-lg">
+      {t('description')}
+    </p>
+    <div class="mt-7 flex flex-wrap justify-center gap-3">
+      <a href="#projeto" class="inline-flex min-h-12 items-center justify-center rounded-xl border border-primary bg-primary px-5 py-3 text-sm font-semibold text-on-primary shadow-[0_0_30px] shadow-primary/25 hover:bg-primary/90 sm:text-base">
+        {t('discover')}
+      </a>
+      <a href="#exemplo" class="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-xl border border-primary/35 bg-surface-container-low/70 px-5 py-3 text-sm font-semibold text-on-surface hover:border-primary hover:bg-surface-container-high sm:text-base">
+        <span class="chat-mark" aria-hidden="true"></span>
+        {t('example')}
+      </a>
+    </div>
+  </div>
+
+  <div class="message-stage relative isolate mx-auto mt-6 flex max-w-5xl justify-center px-4 pt-2 pb-8 sm:pb-12">
+    <div class="stage-halo pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute inset-0 z-10" aria-hidden="true">
+      {previewExamples.map((example, index) => (
+        <div
+          class="message-position text-left"
+          data-side={example.side}
+          style={`--message-top: ${example.top}; --message-offset: ${example.offset}; --message-tilt: ${example.tilt}; --message-delay: ${index * 3 - 1}s`}
+        >
+          <div class="message-bubble rounded-2xl border border-outline-variant bg-surface-container-high/95 p-3 shadow-xl shadow-shadow/15 backdrop-blur-md lg:p-4">
+            <p class="text-[0.625rem] font-medium text-primary sm:text-xs">{t('previewLabel')}</p>
+            <p class="mt-1.5 text-xs leading-snug text-on-surface sm:text-sm">{example.message}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="relative w-[var(--phone-width)] max-w-full rounded-[2.25rem] border border-outline bg-surface-container-lowest p-2 shadow-2xl shadow-shadow/40 ring-4 ring-primary/8">
+      <div class="phone-screen rounded-[1.75rem] border border-outline-variant bg-surface-container-low px-3 pt-2 pb-3">
+        <div class="mx-auto h-3.5 w-16 rounded-full bg-surface-container-highest" aria-hidden="true"></div>
+        <div class="mt-4 border-b border-outline-variant/75 pb-3 leading-tight" aria-hidden="true">
+          <p class="text-sm font-semibold text-on-surface">Escudo 60+</p>
+          <p class="mt-0.5 text-xs text-on-surface-variant">WhatsApp</p>
+        </div>
+        <ImagePlaceholder id="phone-image-description" name={t('phoneImage')} description={t('phoneImageDescription')} />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .message-stage {
+    --phone-width: min(84vw, 46vh, 24rem);
+  }
+
+  .message-position {
+    position: absolute;
+    top: var(--message-top);
+    width: min(14rem, calc((100% - var(--phone-width)) / 2 - 1.75rem));
+    rotate: var(--message-tilt);
+  }
+
+  .message-position[data-side='left'] {
+    right: calc(50% + var(--phone-width) / 2 + var(--message-offset));
+  }
+
+  .message-position[data-side='right'] {
+    left: calc(50% + var(--phone-width) / 2 + var(--message-offset));
+  }
+
+  .message-bubble {
+    position: relative;
+    visibility: hidden;
+    opacity: 0;
+    transform-origin: bottom center;
+  }
+
+  .message-bubble::after {
+    position: absolute;
+    bottom: -0.4rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-right: 1px solid var(--md-sys-color-outline-variant);
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    background: color-mix(in srgb, var(--md-sys-color-surface-container-high) 95%, transparent);
+    content: '';
+    transform: rotate(45deg);
+  }
+
+  .message-position[data-side='left'] .message-bubble::after {
+    right: 1.25rem;
+  }
+
+  .message-position[data-side='right'] .message-bubble::after {
+    left: 1.25rem;
+  }
+
+  .message-position:nth-child(-n + 2) .message-bubble {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  @media (width < 48rem) {
+    .message-position {
+      width: clamp(8rem, 35vw, 11rem);
+    }
+
+    .message-position[data-side='left'] {
+      right: auto;
+      left: 0.75rem;
+    }
+
+    .message-position[data-side='right'] {
+      right: 0.75rem;
+      left: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .message-bubble {
+      animation: incoming-message 18s ease-in-out infinite both;
+      animation-delay: var(--message-delay);
+    }
+  }
+
+  @keyframes incoming-message {
+    0% {
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(1rem) scale(0.85);
+    }
+
+    4%, 30% {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    38%, 100% {
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-1rem) scale(0.94);
+    }
+  }
+
+  .hero-light {
+    background:
+      radial-gradient(ellipse 33rem 27rem at 18% 8%, color-mix(in srgb, var(--md-sys-color-primary) 22%, transparent), transparent 100%),
+      radial-gradient(ellipse 24rem 22rem at 12% 2%, color-mix(in srgb, var(--md-sys-color-primary-container) 65%, transparent), transparent 100%);
+    mask-image: linear-gradient(black 52%, transparent 100%);
+  }
+
+  .hero-light::before {
+    position: absolute;
+    top: -23rem;
+    left: -9rem;
+    width: 43rem;
+    height: 46rem;
+    background:
+      linear-gradient(to right, var(--md-sys-color-primary) 1px, transparent 1px) 0 0 / 4.5rem 4.5rem,
+      linear-gradient(to bottom, var(--md-sys-color-primary) 1px, transparent 1px) 0 0 / 4.5rem 4.5rem;
+    content: "";
+    mask-image: radial-gradient(ellipse at 50% 53%, black, transparent 65%);
+    opacity: 0.19;
+    transform: perspective(38rem) rotateX(25deg) rotateZ(-24deg);
+  }
+
+  .hero-light::after {
+    position: absolute;
+    top: 11rem;
+    right: 8%;
+    width: min(16rem, 32vw);
+    height: 15rem;
+    background: radial-gradient(circle, var(--md-sys-color-primary) 1px, transparent 1.5px) 0 0 / 2.25rem 2.25rem;
+    content: "";
+    mask-image: radial-gradient(ellipse, black, transparent 70%);
+    opacity: 0.28;
+  }
+
+  .stage-halo {
+    background: radial-gradient(ellipse at 50% 63%, color-mix(in srgb, var(--md-sys-color-primary) 22%, transparent), transparent 63%);
+    mask-image: linear-gradient(black 68%, transparent);
+  }
+
+  .stage-halo::before {
+    position: absolute;
+    top: 0.5rem;
+    left: 50%;
+    width: min(92%, 44rem);
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--md-sys-color-primary) 17%, transparent);
+    border-radius: 50%;
+    background: linear-gradient(color-mix(in srgb, var(--md-sys-color-primary) 9%, transparent), transparent 56%);
+    content: "";
+    transform: translateX(-50%);
+  }
+
+  .phone-screen {
+    background-image: radial-gradient(ellipse at top right, color-mix(in srgb, var(--md-sys-color-primary) 12%, transparent), transparent 65%);
+  }
+
+  .chat-mark {
+    position: relative;
+    display: block;
+    width: 0.95rem;
+    height: 0.75rem;
+    border: 1.5px solid currentColor;
+    border-radius: 0.25rem;
+  }
+
+  .chat-mark::after {
+    position: absolute;
+    bottom: -0.15rem;
+    left: 0.14rem;
+    width: 0.24rem;
+    height: 0.24rem;
+    border-bottom: 1.5px solid currentColor;
+    border-left: 1.5px solid currentColor;
+    background: var(--md-sys-color-surface-container-low);
+    content: "";
+    transform: skewY(-35deg);
+  }
+</style>

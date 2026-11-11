@@ -1,0 +1,78 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  description: string;
+}
+
+const { id, name, description } = Astro.props;
+---
+
+<div class="image-placeholder">
+  <details>
+    <summary
+      aria-controls={id}
+      aria-describedby={id}
+      class="grid w-full cursor-pointer list-none place-items-center rounded-xl p-4"
+    >
+      <span class="cube grid aspect-[3/4] w-full max-w-84 place-items-center border border-primary/50 bg-primary-container text-on-primary-container">
+        <span class="relative z-10 max-w-[90%] -rotate-45 px-2 text-center text-base leading-tight font-semibold sm:text-xl">{name}</span>
+      </span>
+    </summary>
+  </details>
+  <p id={id} class="image-description min-h-18 rounded-xl border border-outline-variant bg-surface-container-high px-3 py-2 text-sm leading-snug text-on-surface">
+    {description}
+  </p>
+</div>
+
+<style>
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .cube {
+    position: relative;
+    box-shadow: 0 0 2rem color-mix(in srgb, var(--md-sys-color-primary) 16%, transparent);
+  }
+
+  .cube::before,
+  .cube::after {
+    position: absolute;
+    border: 1px solid color-mix(in srgb, var(--md-sys-color-primary) 45%, transparent);
+    background: color-mix(in srgb, var(--md-sys-color-primary-container) 72%, var(--md-sys-color-primary));
+    content: "";
+  }
+
+  .cube::before {
+    right: -1px;
+    bottom: 100%;
+    left: -1px;
+    height: 0.8rem;
+    transform: skewX(-45deg);
+    transform-origin: bottom;
+  }
+
+  .cube::after {
+    top: -1px;
+    bottom: -1px;
+    left: 100%;
+    width: 0.8rem;
+    background: color-mix(in srgb, var(--md-sys-color-primary-container) 70%, var(--md-sys-color-surface));
+    transform: skewY(-45deg);
+    transform-origin: left;
+  }
+
+  .image-description {
+    opacity: 0;
+  }
+
+  .image-placeholder:has(details[open], summary:focus-visible) .image-description {
+    opacity: 1;
+  }
+
+  @media (hover: hover) {
+    .image-placeholder:hover .image-description {
+      opacity: 1;
+    }
+  }
+</style>
