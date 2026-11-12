@@ -11,6 +11,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = useTranslations(locale);
 const how = landingContent[locale].how;
+const stepLabel = landingContent[locale].example.stepLabel;
 const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-projeto/' : 'about-the-project/');
 ---
 
@@ -62,19 +63,44 @@ const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-p
       </div>
       <div class="how-layout">
         <div class="phone-dock" data-phone-dock aria-hidden="true"></div>
-        <ol class="how-cards">
-          {how.steps.map((step, index) => (
-            <li class="how-card flex flex-col rounded-[1.125rem] border border-outline-variant bg-surface-container-low p-5 dark:border-primary/20 lg:p-6">
-              <span class="text-[2rem] leading-none font-medium text-primary" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-              <h3 class="mt-6 text-[1.375rem] leading-snug font-semibold">{step.title}</h3>
-              <p class="mt-2 mb-4 text-base leading-relaxed text-on-surface-variant lg:text-[1.0625rem]">{step.description}</p>
-              <div class="mt-auto rounded-xl bg-primary/10 px-3 py-3">
-                <p class="text-[0.625rem] leading-relaxed font-semibold tracking-wide text-primary uppercase">{step.label}</p>
-                <p class="mt-1 text-sm leading-relaxed">{step.example}</p>
+        <div class="how-steps" data-how-steps>
+          <div class="how-step-header" data-step-controls hidden>
+            <div class="flex gap-1.5" role="tablist" aria-label={how.label}>
+              {how.steps.map((step, index) => (
+                <button
+                  id={`how-step-tab-${index + 1}`}
+                  type="button"
+                  role="tab"
+                  aria-label={`${stepLabel} ${index + 1}: ${step.title}`}
+                  aria-controls={`how-step-panel-${index + 1}`}
+                  aria-selected={index === 0 ? 'true' : 'false'}
+                  tabindex={index === 0 ? 0 : -1}
+                  class="how-step-tab grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border border-primary/35 text-sm font-semibold"
+                >{index + 1}</button>
+              ))}
+            </div>
+            <h3 class="text-lg leading-snug font-semibold" data-current-step-title>{how.steps[0].title}</h3>
+          </div>
+          <div class="how-cards" role="list" data-step-panels>
+            {how.steps.map((step, index) => (
+              <div
+                id={`how-step-panel-${index + 1}`}
+                role="listitem"
+                aria-labelledby={`how-step-title-${index + 1}`}
+                data-step-panel
+                class="how-card flex flex-col rounded-[1.125rem] border border-outline-variant bg-surface-container-low p-5 dark:border-primary/20 lg:p-6"
+              >
+                <span class="how-card-number text-[2rem] leading-none font-medium text-primary" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                <h3 id={`how-step-title-${index + 1}`} class="how-card-title mt-6 text-[1.375rem] leading-snug font-semibold">{step.title}</h3>
+                <p class="how-card-description mt-2 mb-4 text-base leading-relaxed text-on-surface-variant lg:text-[1.0625rem]">{step.description}</p>
+                <div class="mt-auto rounded-xl bg-primary/10 px-3 py-3">
+                  <p class="text-[0.625rem] leading-relaxed font-semibold tracking-wide text-primary uppercase">{step.label}</p>
+                  <p class="mt-1 text-sm leading-relaxed">{step.example}</p>
+                </div>
               </div>
-            </li>
-          ))}
-        </ol>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -82,6 +108,7 @@ const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-p
 
 <script>
   import '../scripts/hero-story';
+  import '../scripts/how-steps';
 </script>
 
 <style>
@@ -134,6 +161,45 @@ const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-p
     min-width: 0;
   }
 
+  .how-steps {
+    min-width: 0;
+  }
+
+  .how-step-header {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .how-step-header[hidden],
+  .how-card[hidden] {
+    display: none;
+  }
+
+  .how-step-tab[aria-selected='true'] {
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+  }
+
+  .how-step-tab[aria-selected='false'] {
+    color: var(--md-sys-color-primary);
+  }
+
+  .how-step-tab:hover {
+    border-color: var(--md-sys-color-primary);
+  }
+
+  [data-mobile-steps] .how-card-number,
+  [data-mobile-steps] .how-card-title {
+    display: none;
+  }
+
+  [data-mobile-steps] .how-card-description {
+    margin-top: 0;
+  }
+
   [data-story-ready] .phone-traveler {
     position: absolute;
     z-index: 2;
@@ -157,7 +223,8 @@ const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-p
     transform: translateY(var(--how-heading-y, 0px));
   }
 
-  [data-story-ready] .how-card {
+  [data-story-ready] .how-card,
+  [data-story-ready] .how-step-header {
     opacity: var(--cards-open, 0);
     transform: translateY(calc((1 - var(--cards-open, 0)) * -4rem));
   }
@@ -172,7 +239,7 @@ const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-p
     }
 
     [data-story-ready] .phone-dock,
-    [data-story-ready] .how-cards {
+    [data-story-ready] .how-steps {
       grid-area: 1 / 1;
     }
 
