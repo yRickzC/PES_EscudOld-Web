@@ -11,7 +11,6 @@ interface Props {
 const { locale } = Astro.props;
 const t = useTranslations(locale);
 const how = landingContent[locale].how;
-const messageLabel = locale === 'pt-br' ? 'Mensagem' : 'Message';
 const scrollHint = locale === 'pt-br'
   ? 'Role para acompanhar as mensagens. Com o foco nesta área, use as setas para trocar a mensagem.'
   : 'Scroll to follow the messages. When this area is focused, use the arrow keys to change the message.';
@@ -75,8 +74,7 @@ const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-p
                   <span>Avatar {index + 1}</span>
                 </div>
                 <article class="how-message rounded-[1.125rem] border border-outline-variant bg-surface-container-low p-5 dark:border-primary/20 lg:p-6" aria-labelledby={`how-message-title-${index + 1}`}>
-                  <p class="text-xs font-semibold tracking-wide text-primary uppercase">{messageLabel} {index + 1} / {how.steps.length}</p>
-                  <h3 id={`how-message-title-${index + 1}`} class="mt-4 text-[1.375rem] leading-snug font-semibold">{step.title}</h3>
+                  <h3 id={`how-message-title-${index + 1}`} class="text-[1.375rem] leading-snug font-semibold">{step.title}</h3>
                   <p class="mt-3 text-base leading-relaxed text-on-surface-variant lg:text-[1.0625rem]">{step.description}</p>
                   <div class="mt-5 rounded-xl bg-primary/10 px-3 py-3">
                     <p class="text-[0.625rem] leading-relaxed font-semibold tracking-wide text-primary uppercase">{step.label}</p>
