@@ -95,7 +95,7 @@ const signalIcons = [
               </div>
             </figure>
           </div>
-          <div class="border-t border-primary/35 pt-8 md:border-t-0 md:border-l md:pt-2 md:pl-12">
+          <div class="border-t border-primary/35 pt-8 text-center md:border-t-0 md:border-l md:pt-2 md:pl-12">
             <p data-reveal class="eyebrow">{content.example.explanationLabel}</p>
             <div data-example-carousel data-reveal class="example-carousel mt-9" role="group" aria-label={content.example.explanationLabel}>
               <ol class="carousel-slides grid gap-6" aria-live="off">
@@ -105,11 +105,11 @@ const signalIcons = [
                       {content.example.stepLabel} <span class="text-2xl font-semibold">{String(index + 1).padStart(2, '0')}</span>
                     </span>
                     <h3 class="mt-5 text-xl leading-snug font-semibold sm:text-2xl">{explanation.title}</h3>
-                    <p class="mt-3 max-w-[38ch] text-base leading-relaxed text-on-surface-variant sm:text-lg">{explanation.description}</p>
+                    <p class="mx-auto mt-3 max-w-[38ch] text-base leading-relaxed text-on-surface-variant sm:text-lg">{explanation.description}</p>
                   </li>
                 ))}
               </ol>
-              <div data-carousel-controls hidden class="mt-5 items-center justify-between gap-3">
+              <div data-carousel-controls hidden class="mt-5 items-center justify-center gap-3">
                 <div class="flex gap-2">
                   {content.example.explanations.map((explanation, index) => (
                     <button
