@@ -53,7 +53,7 @@ if (story && intro && launch && phone && dock && how && heading && track && scen
     const sequence = clamp((scrollY - geometry.pinStart) / geometry.stepDistance, exchanges.length);
     const current = Math.min(Math.floor(sequence), exchanges.length - 1);
     // Most of each scroll interval is a reading pause. Only the last 30%
-    // lifts the current message and brings the next one up from below.
+    // lifts the current avatar/message pair and brings the next one from below.
     const transition = current === exchanges.length - 1 ? 0 : ease(clamp((sequence - current - 0.7) / 0.3));
     active = Math.min(current + (transition >= 0.5 ? 1 : 0), exchanges.length - 1);
 
@@ -63,7 +63,7 @@ if (story && intro && launch && phone && dock && how && heading && track && scen
       const opacity = isCurrent ? 1 - transition : isNext ? transition : 0;
       const offset = isCurrent ? -transition : isNext ? 1 - transition : index < current ? -1 : 1;
       exchange.style.setProperty('--exchange-opacity', String(opacity));
-      exchange.style.setProperty('--message-y', `${offset * geometry.messageDistance}px`);
+      exchange.style.setProperty('--exchange-y', `${offset * geometry.messageDistance}px`);
       exchange.toggleAttribute('data-current', index === active);
       exchange.setAttribute('aria-hidden', String(index !== active));
       exchange.inert = index !== active;
@@ -90,7 +90,7 @@ if (story && intro && launch && phone && dock && how && heading && track && scen
     const scrollY = window.scrollY;
     const sceneHeight = scene.offsetHeight;
     const pinTop = Math.max(24, (window.innerHeight - sceneHeight) / 2);
-    const stepDistance = Math.max(480, window.innerHeight * 0.95);
+    const stepDistance = Math.max(400, window.innerHeight * 0.8);
     const scrollSpace = stepDistance * exchanges.length;
     story.style.setProperty('--scene-top', `${pinTop}px`);
     story.style.setProperty('--scene-height', `${sceneHeight}px`);

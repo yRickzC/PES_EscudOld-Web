@@ -229,18 +229,21 @@ const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-p
     pointer-events: auto;
   }
 
+  [data-story-ready] .avatar-placeholder,
+  [data-story-ready] .how-message {
+    opacity: var(--exchange-opacity, 0);
+    transform: translateY(var(--exchange-y, 0px));
+    will-change: transform, opacity;
+  }
+
   [data-story-ready] .avatar-placeholder {
     grid-area: 1 / 1;
     width: var(--dock-width);
     justify-self: end;
-    opacity: var(--exchange-opacity, 0);
   }
 
   [data-story-ready] .how-message {
     grid-area: 2 / 1 / 3 / -1;
-    opacity: var(--exchange-opacity, 0);
-    transform: translateY(var(--message-y, 0px));
-    will-change: transform, opacity;
   }
 
   @media (width < 64rem) {
