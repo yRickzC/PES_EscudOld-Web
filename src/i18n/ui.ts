@@ -1,6 +1,8 @@
 const ui = {
   'pt-br': {
     navigation: 'Navegação principal',
+    whoWeAre: 'Quem somos',
+    aboutProject: 'Sobre o projeto',
     themeLight: 'Usar tema claro',
     themeDark: 'Usar tema escuro',
     skip: 'Ir para o conteúdo',
@@ -45,6 +47,8 @@ const ui = {
   },
   en: {
     navigation: 'Main navigation',
+    whoWeAre: 'Who we are',
+    aboutProject: 'About the project',
     themeLight: 'Use light theme',
     themeDark: 'Use dark theme',
     skip: 'Skip to content',

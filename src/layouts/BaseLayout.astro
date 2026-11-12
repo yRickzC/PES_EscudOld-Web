@@ -52,14 +52,11 @@ const alternateHref = getRelativeLocaleUrl(alternateLocale);
             EscudOld
           </a>
           <nav id="header-navigation" aria-label={t('navigation')} class="mobile-navigation order-2 flex w-full flex-wrap items-center justify-center gap-1 border-t border-outline-variant/60 pt-2 text-sm sm:order-1 sm:ml-auto sm:w-auto sm:border-t-0 sm:pt-0">
-            <a class="inline-flex min-h-11 items-center rounded-xl px-2.5 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface sm:px-3" href="#projeto">
-              {t('project')}
+            <a class="inline-flex min-h-11 items-center rounded-xl px-2.5 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface sm:px-3" href={getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'quem-somos/' : 'about-us/')}>
+              {t('whoWeAre')}
             </a>
-            <a class="inline-flex min-h-11 items-center rounded-xl px-2.5 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface sm:px-3" href="#como-funciona">
-              {t('how')}
-            </a>
-            <a class="inline-flex min-h-11 items-center rounded-xl bg-primary px-3 font-semibold text-on-primary hover:bg-primary/90 sm:px-4" href="#exemplo">
-              {t('example')}
+            <a class="inline-flex min-h-11 items-center rounded-xl px-2.5 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface sm:px-3" href={getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-projeto/' : 'about-the-project/')}>
+              {t('aboutProject')}
             </a>
           </nav>
           <div data-reveal class="order-1 ml-auto flex items-center gap-1.5 text-sm sm:order-2 sm:ml-0">
