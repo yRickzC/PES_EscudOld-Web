@@ -17,23 +17,6 @@ const signalIcons = [
 ---
 
 <div class="text-on-surface">
-  <section id="projeto" aria-labelledby="project-title" class="chapter border-b border-outline-variant bg-surface-container dark:border-outline-variant/60">
-    <div class="section-container grid gap-8 py-16 md:grid-cols-[1.1fr_1fr] md:gap-20 md:py-20">
-      <div>
-        <p data-reveal class="eyebrow">{content.project.label}</p>
-        <h2 data-reveal id="project-title" class="mt-5 text-[clamp(2rem,3.4vw,3.25rem)] leading-[1.12] font-medium tracking-[-0.025em]">
-          {content.project.title.map((line) => <span class="block">{line}</span>)}
-        </h2>
-      </div>
-      <div class="max-w-xl text-lg leading-relaxed md:pt-4 lg:text-xl">
-        <p data-reveal class="text-on-surface-variant">
-          {content.project.introduction.map((line) => <span class="block">{line}</span>)}
-        </p>
-        <p data-reveal class="mt-7">{content.project.description}</p>
-      </div>
-    </div>
-  </section>
-
   <section id="como-funciona" aria-labelledby="how-title" class="chapter bg-background">
     <div class="section-container py-16 md:py-20">
       <p data-reveal class="eyebrow">{content.how.label}</p>

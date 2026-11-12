@@ -1,4 +1,5 @@
 ---
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import ImagePlaceholder from './ImagePlaceholder.astro';
 import { useTranslations, type Locale } from '../i18n/ui';
 
@@ -6,15 +7,9 @@ interface Props {
   locale: Locale;
 }
 
-const t = useTranslations(Astro.props.locale);
-const previewExamples = [
-  { message: t('previewFamilyMessage'), side: 'left', top: '10%', offset: '0.25rem', tilt: '-6deg' },
-  { message: t('previewBankMessage'), side: 'right', top: '35%', offset: '1rem', tilt: '5deg' },
-  { message: t('previewPrizeMessage'), side: 'left', top: '43%', offset: '1.25rem', tilt: '3deg' },
-  { message: t('previewDeliveryMessage'), side: 'right', top: '67%', offset: '0.25rem', tilt: '-4deg' },
-  { message: t('previewCodeMessage'), side: 'left', top: '73%', offset: '0.5rem', tilt: '-3deg' },
-  { message: t('previewMessage'), side: 'right', top: '6%', offset: '0.75rem', tilt: '6deg' },
-];
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-projeto/' : 'about-the-project/');
 ---
 
 <section class="hero relative isolate" aria-labelledby="hero-title" data-parallax-hero>
@@ -28,7 +23,7 @@ const previewExamples = [
       {t('description')}
     </p>
     <div class="mt-7 flex flex-wrap justify-center gap-3">
-      <a data-reveal href="#projeto" class="inline-flex min-h-12 items-center justify-center rounded-xl border border-primary bg-primary px-5 py-3 text-sm font-semibold text-on-primary shadow-[0_0_30px] shadow-primary/25 hover:bg-primary/90 sm:text-base">
+      <a data-reveal href={projectHref} class="inline-flex min-h-12 items-center justify-center rounded-xl border border-primary bg-primary px-5 py-3 text-sm font-semibold text-on-primary shadow-[0_0_30px] shadow-primary/25 hover:bg-primary/90 sm:text-base">
         {t('discover')}
       </a>
       <a data-reveal href="#exemplo" class="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-xl border border-primary/35 bg-surface-container-low/70 px-5 py-3 text-sm font-semibold text-on-surface hover:border-primary hover:bg-surface-container-high sm:text-base">
@@ -40,21 +35,6 @@ const previewExamples = [
 
   <div class="message-stage relative isolate mx-auto mt-6 flex max-w-5xl items-start justify-center px-4 pt-2">
     <div class="stage-halo pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true"></div>
-    <div class="pointer-events-none absolute inset-0 z-10" aria-hidden="true">
-      {previewExamples.map((example, index) => (
-        <div
-          class="message-position text-left"
-          data-side={example.side}
-          style={`--message-top: ${example.top}; --message-offset: ${example.offset}; --message-tilt: ${example.tilt}; --message-delay: ${index * 3 - 1}s`}
-        >
-          <div class="message-bubble rounded-2xl border border-outline-variant bg-surface-container-high/95 p-3 shadow-xl shadow-shadow/15 backdrop-blur-md lg:p-4">
-            <p class="text-[0.625rem] font-medium text-primary sm:text-xs">{t('previewLabel')}</p>
-            <p class="mt-1.5 text-xs leading-snug text-on-surface sm:text-sm">{example.message}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-
     <div data-reveal class="phone-parallax relative w-[var(--phone-width)] max-w-full rounded-[2.25rem] border border-outline bg-surface-container-lowest p-2 shadow-2xl shadow-shadow/40 ring-4 ring-primary/8" data-parallax-phone>
       <div class="phone-screen rounded-[1.75rem] border border-outline-variant bg-surface-container-low px-3 pt-2 pb-3">
         <div class="mx-auto h-3.5 w-16 rounded-full bg-surface-container-highest" aria-hidden="true"></div>
@@ -102,71 +82,14 @@ const previewExamples = [
 <style>
   .message-stage {
     --phone-width: min(84vw, 46vh, 24rem);
-    height: clamp(18rem, 42svh, 28rem);
+    padding-bottom: calc(min(14vh, 8rem) + 1rem);
     overflow: clip;
   }
 
-  .message-position {
-    position: absolute;
-    top: var(--message-top);
-    width: min(14rem, calc((100% - var(--phone-width)) / 2 - 1.75rem));
-    rotate: var(--message-tilt);
-  }
-
-  .message-position[data-side='left'] {
-    right: calc(50% + var(--phone-width) / 2 + var(--message-offset));
-  }
-
-  .message-position[data-side='right'] {
-    left: calc(50% + var(--phone-width) / 2 + var(--message-offset));
-  }
-
-  .message-bubble {
-    position: relative;
-    visibility: hidden;
-    opacity: 0;
-    transform-origin: bottom center;
-  }
-
-  .message-bubble::after {
-    position: absolute;
-    bottom: -0.4rem;
-    width: 0.75rem;
-    height: 0.75rem;
-    border-right: 1px solid var(--md-sys-color-outline-variant);
-    border-bottom: 1px solid var(--md-sys-color-outline-variant);
-    background: color-mix(in srgb, var(--md-sys-color-surface-container-high) 95%, transparent);
-    content: '';
-    transform: rotate(45deg);
-  }
-
-  .message-position[data-side='left'] .message-bubble::after {
-    right: 1.25rem;
-  }
-
-  .message-position[data-side='right'] .message-bubble::after {
-    left: 1.25rem;
-  }
-
-  .message-position:nth-child(-n + 2) .message-bubble {
-    visibility: visible;
-    opacity: 1;
-  }
-
-  @media (width < 48rem) {
-    .message-position {
-      width: clamp(8rem, 35vw, 11rem);
-    }
-
-    .message-position[data-side='left'] {
-      right: auto;
-      left: 0.75rem;
-    }
-
-    .message-position[data-side='right'] {
-      right: 0.75rem;
-      left: auto;
-    }
+  .phone-parallax {
+    display: flex;
+    flex-shrink: 0;
+    aspect-ratio: 9 / 18;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -174,30 +97,11 @@ const previewExamples = [
       transform: translate3d(0, var(--phone-parallax-y, 0px), 0);
       will-change: transform;
     }
-
-    .message-bubble {
-      animation: incoming-message 18s ease-in-out infinite both;
-      animation-delay: var(--message-delay);
-    }
   }
 
-  @keyframes incoming-message {
-    0% {
-      visibility: hidden;
-      opacity: 0;
-      transform: translateY(1rem) scale(0.85);
-    }
-
-    4%, 30% {
-      visibility: visible;
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    38%, 100% {
-      visibility: hidden;
-      opacity: 0;
-      transform: translateY(-1rem) scale(0.94);
+  @media (prefers-reduced-motion: reduce) {
+    .message-stage {
+      padding-bottom: 1rem;
     }
   }
 
@@ -254,6 +158,10 @@ const previewExamples = [
   }
 
   .phone-screen {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
     background-image: radial-gradient(ellipse at top right, color-mix(in srgb, var(--md-sys-color-primary) 12%, transparent), transparent 65%);
   }
 

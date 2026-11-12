@@ -119,7 +119,7 @@ const alternateHref = getRelativeLocaleUrl(alternateLocale);
         <div class="md:justify-self-end">
           <nav data-reveal aria-label={footer.navigation}>
             <ul class="flex flex-wrap items-center gap-x-5 text-base">
-              <li><a class="inline-flex min-h-11 items-center hover:text-primary hover:underline" href="#projeto">{footer.project}</a></li>
+              <li><a class="inline-flex min-h-11 items-center hover:text-primary hover:underline" href={getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-projeto/' : 'about-the-project/')}>{footer.project}</a></li>
               <li aria-hidden="true">/</li>
               <li><a class="inline-flex min-h-11 items-center hover:text-primary hover:underline" href="#como-funciona">{footer.how}</a></li>
               <li aria-hidden="true">/</li>
