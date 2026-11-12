@@ -22,6 +22,13 @@ if (story && intro && launch && phone && dock && how && heading && track && scen
   let frame = 0;
   let active = 0;
 
+  const placePhone = (parent: HTMLElement) => {
+    if (phone.parentElement === parent) return;
+    const focused = phone.contains(document.activeElement) ? document.activeElement : null;
+    parent.append(phone);
+    if (focused instanceof HTMLElement) focused.focus({ preventScroll: true });
+  };
+
   const render = () => {
     frame = 0;
     if (reducedMotion.matches) return;
@@ -29,13 +36,15 @@ if (story && intro && launch && phone && dock && how && heading && track && scen
     const scrollY = window.scrollY;
     const progress = clamp((scrollY - geometry.start) / (geometry.end - geometry.start));
     const travel = geometry.distance * ease(progress);
-    const pinned = clamp(scrollY - geometry.pinStart, geometry.scrollSpace);
     const headingY = Math.min(0, geometry.origin + travel - geometry.headingBottom - 40);
     const clearance = clamp((geometry.headingTop + headingY - geometry.introBottom - 16) / 48);
 
     story.style.setProperty('--story-progress', String(progress));
-    story.style.setProperty('--phone-travel', `${travel + pinned}px`);
-    story.style.setProperty('--phone-x', `${geometry.distanceX * ease(progress)}px`);
+    // Start offset from the real dock. Once the entrance finishes, both offsets
+    // are zero and native sticky scrolling moves the phone with the scene,
+    // without waiting for a scroll event or a JavaScript animation frame.
+    story.style.setProperty('--phone-travel', `${travel - geometry.distance}px`);
+    story.style.setProperty('--phone-x', `${geometry.distanceX * (ease(progress) - 1)}px`);
     story.style.setProperty('--phone-scale', String(1 + (geometry.scale - 1) * ease(progress)));
     story.style.setProperty('--exchanges-open', String(ease(clamp((progress - 0.45) / 0.55))));
     story.style.setProperty('--how-heading-opacity', String(ease(clamp((progress - 0.2) / 0.35)) * clearance));
@@ -65,6 +74,7 @@ if (story && intro && launch && phone && dock && how && heading && track && scen
     story.toggleAttribute('data-story-ready', !reducedMotion.matches);
     help.hidden = reducedMotion.matches;
     if (reducedMotion.matches) {
+      placePhone(launch);
       scene.removeAttribute('tabindex');
       scene.removeAttribute('aria-describedby');
       exchanges.forEach(exchange => {
@@ -74,6 +84,7 @@ if (story && intro && launch && phone && dock && how && heading && track && scen
       return;
     }
 
+    placePhone(dock);
     scene.tabIndex = 0;
     scene.setAttribute('aria-describedby', help.id);
     const scrollY = window.scrollY;
@@ -100,7 +111,7 @@ if (story && intro && launch && phone && dock && how && heading && track && scen
       end: Math.max(start + 1, Math.min(pinStart, how.getBoundingClientRect().top + scrollY - 32)),
       distance: destination.top + scrollY - pinned - origin,
       distanceX: destination.left + destination.width / 2 - (launchBounds.left + launchBounds.width / 2),
-      scale: destination.width / phone.offsetWidth,
+      scale: destination.width / parseFloat(getComputedStyle(phone).width),
       origin,
       headingTop: headingBounds.top + scrollY,
       headingBottom: headingBounds.bottom + scrollY,

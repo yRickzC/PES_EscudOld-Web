@@ -67,7 +67,7 @@ const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-p
       <div class="how-scroll-track" data-how-track>
         <p id="how-scroll-help" class="sr-only" data-scroll-help hidden>{scrollHint}</p>
         <div class="how-scene" data-how-scene role="group" aria-labelledby="how-title">
-          <div class="phone-dock" data-phone-dock aria-hidden="true"></div>
+          <div class="phone-dock" data-phone-dock></div>
           <ol class="how-exchanges">
             {how.steps.map((step, index) => (
               <li class="how-exchange" data-how-exchange>
@@ -133,6 +133,7 @@ const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-p
   }
 
   .phone-dock {
+    position: relative;
     display: none;
     width: var(--dock-width);
     aspect-ratio: 9 / 18;
@@ -174,7 +175,7 @@ const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-p
   [data-story-ready] .phone-traveler {
     position: absolute;
     z-index: 2;
-    top: 1rem;
+    top: 0;
     left: 50%;
     transform-origin: top center;
     transform: translate3d(calc(-50% + var(--phone-x, 0px)), var(--phone-travel, 0px), 0) scale(var(--phone-scale, 1));
