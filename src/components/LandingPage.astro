@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LandingHero from './LandingHero.astro';
+import LandingSections from './LandingSections.astro';
 import { useTranslations, type Locale } from '../i18n/ui';
 
 interface Props {
@@ -9,65 +10,11 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = useTranslations(locale);
-const steps = [
-  { title: t('sendTitle'), description: t('sendDescription') },
-  { title: t('reviewTitle'), description: t('reviewDescription') },
-  { title: t('decideTitle'), description: t('decideDescription') },
-];
 ---
 
 <BaseLayout locale={locale} title={t('pageTitle')} description={t('description')}>
   <LandingHero locale={locale} />
-
-  <section id="projeto" aria-labelledby="project-title" class="scroll-mt-28 border-y border-outline-variant/70 bg-surface-container-low sm:scroll-mt-8">
-    <div class="mx-auto grid max-w-6xl gap-6 px-6 py-16 sm:px-8 sm:py-22 md:grid-cols-[1fr_1.15fr] md:gap-14">
-      <h2 id="project-title" class="max-w-[12ch] text-4xl leading-[1.06] font-medium tracking-[-0.045em] text-on-surface sm:text-5xl">
-        {t('problemTitle')}
-      </h2>
-      <div class="max-w-xl space-y-4 text-base leading-relaxed text-on-surface-variant sm:text-lg">
-        <p>{t('problemDescription')}</p>
-        <p>{t('projectDescription')}</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="como-funciona" aria-labelledby="how-title" class="mx-auto max-w-6xl scroll-mt-28 px-6 py-16 sm:scroll-mt-8 sm:px-8 sm:py-22">
-    <h2 id="how-title" class="text-4xl leading-[1.06] font-medium tracking-[-0.045em] text-on-surface sm:text-5xl">
-      {t('howTitle')}
-    </h2>
-    <ol class="mt-8 grid gap-3 sm:mt-10 md:grid-cols-3">
-      {steps.map((step, index) => (
-        <li class="rounded-2xl border border-outline-variant bg-surface-container-low p-5 sm:p-6">
-          <span class="grid size-9 place-items-center rounded-xl bg-primary-container text-sm font-semibold text-on-primary-container" aria-hidden="true">{index + 1}</span>
-          <h3 class="mt-4 text-xl leading-tight font-semibold text-on-surface">{step.title}</h3>
-          <p class="mt-2 text-base leading-relaxed text-on-surface-variant">{step.description}</p>
-        </li>
-      ))}
-    </ol>
-  </section>
-
-  <section id="exemplo" aria-labelledby="example-title" class="scroll-mt-28 border-t border-outline-variant/70 bg-surface-container-low sm:scroll-mt-8">
-    <div class="mx-auto grid max-w-6xl items-center gap-8 px-6 py-16 sm:px-8 sm:py-22 md:grid-cols-[0.9fr_1.1fr] md:gap-14">
-      <div>
-        <h2 id="example-title" class="max-w-[17ch] text-4xl leading-[1.06] font-medium tracking-[-0.045em] text-on-surface sm:text-5xl">
-          {t('exampleTitle')}
-        </h2>
-        <p class="mt-4 max-w-md text-base leading-relaxed text-on-surface-variant sm:text-lg">{t('exampleDescription')}</p>
-      </div>
-      <figure class="rounded-3xl border border-outline-variant bg-surface-container-lowest p-4 shadow-xl shadow-shadow/10 sm:p-6">
-        <figcaption class="mb-5 border-b border-outline-variant pb-3 text-sm font-semibold text-on-surface-variant">
-          {t('exampleLabel')}
-        </figcaption>
-        <div class="ml-auto w-fit max-w-[92%] rounded-2xl rounded-tr-sm bg-primary-container px-4 py-3 text-on-primary-container">
-          <p class="text-sm font-semibold">{t('demoYou')}</p>
-          <p class="mt-1 text-base leading-relaxed">{t('demoMessage')}</p>
-        </div>
-        <div class="mt-4 w-fit max-w-[94%] rounded-2xl rounded-tl-sm border border-outline-variant bg-surface-container-high px-4 py-3">
-          <p class="text-sm font-semibold text-on-surface">Escudo 60+</p>
-          <p class="mt-1 font-semibold text-error">{t('demoRisk')}</p>
-          <p class="mt-1 text-base leading-relaxed text-on-surface">{t('demoAnswer')}</p>
-        </div>
-      </figure>
-    </div>
-  </section>
+  <div class="relative z-10 border-t border-outline-variant/50 bg-background">
+    <LandingSections locale={locale} />
+  </div>
 </BaseLayout>

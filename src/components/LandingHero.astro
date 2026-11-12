@@ -17,28 +17,28 @@ const previewExamples = [
 ];
 ---
 
-<section class="hero relative isolate" aria-labelledby="hero-title">
+<section class="hero relative isolate" aria-labelledby="hero-title" data-parallax-hero>
   <div class="hero-light pointer-events-none absolute inset-x-0 -top-36 -z-10 h-[44rem] overflow-hidden" aria-hidden="true"></div>
 
   <div class="mx-auto max-w-5xl px-5 pt-14 text-center sm:px-8 sm:pt-22 lg:pt-25">
-    <h1 id="hero-title" class="text-[clamp(2.5rem,7.4vw,5.5rem)] leading-[0.99] font-medium tracking-[-0.06em] text-on-surface">
+    <h1 data-reveal id="hero-title" class="text-[clamp(2.5rem,7.4vw,5.5rem)] leading-[0.99] font-medium tracking-[-0.06em] text-on-surface">
       {t('titleFirst')} <span class="block">{t('titleSecond')}</span>
     </h1>
-    <p class="mx-auto mt-6 max-w-[34rem] text-base leading-relaxed text-on-surface-variant sm:text-lg">
+    <p data-reveal class="mx-auto mt-6 max-w-[34rem] text-base leading-relaxed text-on-surface-variant sm:text-lg">
       {t('description')}
     </p>
     <div class="mt-7 flex flex-wrap justify-center gap-3">
-      <a href="#projeto" class="inline-flex min-h-12 items-center justify-center rounded-xl border border-primary bg-primary px-5 py-3 text-sm font-semibold text-on-primary shadow-[0_0_30px] shadow-primary/25 hover:bg-primary/90 sm:text-base">
+      <a data-reveal href="#projeto" class="inline-flex min-h-12 items-center justify-center rounded-xl border border-primary bg-primary px-5 py-3 text-sm font-semibold text-on-primary shadow-[0_0_30px] shadow-primary/25 hover:bg-primary/90 sm:text-base">
         {t('discover')}
       </a>
-      <a href="#exemplo" class="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-xl border border-primary/35 bg-surface-container-low/70 px-5 py-3 text-sm font-semibold text-on-surface hover:border-primary hover:bg-surface-container-high sm:text-base">
+      <a data-reveal href="#exemplo" class="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-xl border border-primary/35 bg-surface-container-low/70 px-5 py-3 text-sm font-semibold text-on-surface hover:border-primary hover:bg-surface-container-high sm:text-base">
         <span class="chat-mark" aria-hidden="true"></span>
         {t('example')}
       </a>
     </div>
   </div>
 
-  <div class="message-stage relative isolate mx-auto mt-6 flex max-w-5xl justify-center px-4 pt-2 pb-8 sm:pb-12">
+  <div class="message-stage relative isolate mx-auto mt-6 flex max-w-5xl items-start justify-center px-4 pt-2">
     <div class="stage-halo pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true"></div>
     <div class="pointer-events-none absolute inset-0 z-10" aria-hidden="true">
       {previewExamples.map((example, index) => (
@@ -55,11 +55,11 @@ const previewExamples = [
       ))}
     </div>
 
-    <div class="relative w-[var(--phone-width)] max-w-full rounded-[2.25rem] border border-outline bg-surface-container-lowest p-2 shadow-2xl shadow-shadow/40 ring-4 ring-primary/8">
+    <div data-reveal class="phone-parallax relative w-[var(--phone-width)] max-w-full rounded-[2.25rem] border border-outline bg-surface-container-lowest p-2 shadow-2xl shadow-shadow/40 ring-4 ring-primary/8" data-parallax-phone>
       <div class="phone-screen rounded-[1.75rem] border border-outline-variant bg-surface-container-low px-3 pt-2 pb-3">
         <div class="mx-auto h-3.5 w-16 rounded-full bg-surface-container-highest" aria-hidden="true"></div>
         <div class="mt-4 border-b border-outline-variant/75 pb-3 leading-tight" aria-hidden="true">
-          <p class="text-sm font-semibold text-on-surface">Escudo 60+</p>
+          <p class="text-sm font-semibold text-on-surface">EscudOld</p>
           <p class="mt-0.5 text-xs text-on-surface-variant">WhatsApp</p>
         </div>
         <ImagePlaceholder id="phone-image-description" name={t('phoneImage')} description={t('phoneImageDescription')} />
@@ -68,9 +68,42 @@ const previewExamples = [
   </div>
 </section>
 
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-parallax-hero]');
+  const phone = hero?.querySelector<HTMLElement>('[data-parallax-phone]');
+
+  if (hero && phone) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let framePending = false;
+
+    const updatePhone = () => {
+      framePending = false;
+      const distance = Math.max(0, -hero.getBoundingClientRect().top);
+      const offset = reducedMotion.matches
+        ? 0
+        : Math.min(distance * 0.22, window.innerHeight * 0.14, 128);
+
+      phone.style.setProperty('--phone-parallax-y', `${offset}px`);
+    };
+
+    const scheduleUpdate = () => {
+      if (framePending) return;
+      framePending = true;
+      window.requestAnimationFrame(updatePhone);
+    };
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+    reducedMotion.addEventListener('change', scheduleUpdate);
+    updatePhone();
+  }
+</script>
+
 <style>
   .message-stage {
     --phone-width: min(84vw, 46vh, 24rem);
+    height: clamp(18rem, 42svh, 28rem);
+    overflow: clip;
   }
 
   .message-position {
@@ -137,6 +170,11 @@ const previewExamples = [
   }
 
   @media (prefers-reduced-motion: no-preference) {
+    .phone-parallax {
+      transform: translate3d(0, var(--phone-parallax-y, 0px), 0);
+      will-change: transform;
+    }
+
     .message-bubble {
       animation: incoming-message 18s ease-in-out infinite both;
       animation-delay: var(--message-delay);
