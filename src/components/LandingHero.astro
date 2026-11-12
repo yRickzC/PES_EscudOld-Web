@@ -2,6 +2,7 @@
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import ImagePlaceholder from './ImagePlaceholder.astro';
 import { useTranslations, type Locale } from '../i18n/ui';
+import { landingContent } from '../i18n/landing';
 
 interface Props {
   locale: Locale;
@@ -9,13 +10,14 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = useTranslations(locale);
+const how = landingContent[locale].how;
 const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-projeto/' : 'about-the-project/');
 ---
 
-<section class="hero relative isolate" aria-labelledby="hero-title" data-parallax-hero>
+<section class="hero relative isolate" aria-labelledby="hero-title" data-phone-story>
   <div class="hero-light pointer-events-none absolute inset-x-0 -top-36 -z-10 h-[44rem] overflow-hidden" aria-hidden="true"></div>
 
-  <div class="mx-auto max-w-5xl px-5 pt-14 text-center sm:px-8 sm:pt-22 lg:pt-25">
+  <div class="mx-auto max-w-5xl px-5 pt-14 text-center sm:px-8 sm:pt-22 lg:pt-25" data-story-intro>
     <h1 data-reveal id="hero-title" class="text-[clamp(2.5rem,7.4vw,5.5rem)] leading-[0.99] font-medium tracking-[-0.06em] text-on-surface">
       {t('titleFirst')} <span class="block">{t('titleSecond')}</span>
     </h1>
@@ -33,75 +35,190 @@ const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-p
     </div>
   </div>
 
-  <div class="message-stage relative isolate mx-auto mt-6 flex max-w-5xl items-start justify-center px-4 pt-2">
+  <div class="phone-launch relative mx-auto mt-6 flex max-w-5xl items-start justify-center px-4" data-phone-launch>
     <div class="stage-halo pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true"></div>
-    <div data-reveal class="phone-parallax relative w-[var(--phone-width)] max-w-full rounded-[2.25rem] border border-outline bg-surface-container-lowest p-2 shadow-2xl shadow-shadow/40 ring-4 ring-primary/8" data-parallax-phone>
-      <div class="phone-screen rounded-[1.75rem] border border-outline-variant bg-surface-container-low px-3 pt-2 pb-3">
-        <div class="mx-auto h-3.5 w-16 rounded-full bg-surface-container-highest" aria-hidden="true"></div>
-        <div class="mt-4 border-b border-outline-variant/75 pb-3 leading-tight" aria-hidden="true">
-          <p class="text-sm font-semibold text-on-surface">EscudOld</p>
-          <p class="mt-0.5 text-xs text-on-surface-variant">WhatsApp</p>
+    <div class="phone-traveler" data-story-phone>
+      <div class="phone-frame relative w-full rounded-[2.25rem] border border-outline bg-surface-container-lowest p-2 shadow-2xl shadow-shadow/40 ring-4 ring-primary/8">
+        <div class="phone-screen rounded-[1.75rem] border border-outline-variant bg-surface-container-low px-3 pt-2 pb-3">
+          <div class="mx-auto h-3.5 w-16 rounded-full bg-surface-container-highest" aria-hidden="true"></div>
+          <div class="mt-4 border-b border-outline-variant/75 pb-3 leading-tight" aria-hidden="true">
+            <p class="text-sm font-semibold text-on-surface">EscudOld</p>
+            <p class="mt-0.5 text-xs text-on-surface-variant">WhatsApp</p>
+          </div>
+          <ImagePlaceholder id="phone-image-description" name={t('phoneImage')} description={t('phoneImageDescription')} />
         </div>
-        <ImagePlaceholder id="phone-image-description" name={t('phoneImage')} description={t('phoneImageDescription')} />
       </div>
     </div>
   </div>
+
+  <section id="como-funciona" aria-labelledby="how-title" class="how-section text-on-surface" data-how-section>
+    <div class="mx-auto w-full max-w-[84rem] px-6 sm:px-8 lg:px-12">
+      <div class="how-heading mx-auto max-w-4xl text-center" data-how-heading>
+        <div class="how-heading-content">
+          <p class="text-xs leading-relaxed font-semibold text-primary uppercase">{how.label}</p>
+          <h2 id="how-title" class="mt-5 text-[clamp(1.875rem,3vw,2.75rem)] leading-[1.14] font-medium tracking-[-0.025em]">{how.title}</h2>
+          <p class="mt-5 text-lg leading-relaxed text-on-surface-variant">{how.description}</p>
+        </div>
+      </div>
+      <div class="how-layout">
+        <div class="phone-dock" data-phone-dock aria-hidden="true"></div>
+        <ol class="how-cards">
+          {how.steps.map((step, index) => (
+            <li class="how-card flex flex-col rounded-[1.125rem] border border-outline-variant bg-surface-container-low p-5 dark:border-primary/20 lg:p-6">
+              <span class="text-[2rem] leading-none font-medium text-primary" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              <h3 class="mt-6 text-[1.375rem] leading-snug font-semibold">{step.title}</h3>
+              <p class="mt-2 mb-4 text-base leading-relaxed text-on-surface-variant lg:text-[1.0625rem]">{step.description}</p>
+              <div class="mt-auto rounded-xl bg-primary/10 px-3 py-3">
+                <p class="text-[0.625rem] leading-relaxed font-semibold tracking-wide text-primary uppercase">{step.label}</p>
+                <p class="mt-1 text-sm leading-relaxed">{step.example}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
 </section>
 
 <script>
-  const hero = document.querySelector<HTMLElement>('[data-parallax-hero]');
-  const phone = hero?.querySelector<HTMLElement>('[data-parallax-phone]');
-
-  if (hero && phone) {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let framePending = false;
-
-    const updatePhone = () => {
-      framePending = false;
-      const distance = Math.max(0, -hero.getBoundingClientRect().top);
-      const offset = reducedMotion.matches
-        ? 0
-        : Math.min(distance * 0.22, window.innerHeight * 0.14, 128);
-
-      phone.style.setProperty('--phone-parallax-y', `${offset}px`);
-    };
-
-    const scheduleUpdate = () => {
-      if (framePending) return;
-      framePending = true;
-      window.requestAnimationFrame(updatePhone);
-    };
-
-    window.addEventListener('scroll', scheduleUpdate, { passive: true });
-    window.addEventListener('resize', scheduleUpdate);
-    reducedMotion.addEventListener('change', scheduleUpdate);
-    updatePhone();
-  }
+  import '../scripts/hero-story';
 </script>
 
 <style>
-  .message-stage {
+  .hero {
     --phone-width: min(84vw, 46vh, 24rem);
-    padding-bottom: calc(min(14vh, 8rem) + 1rem);
-    overflow: clip;
+    --dock-width: calc(var(--phone-width) * 0.72);
   }
 
-  .phone-parallax {
-    display: flex;
+  .phone-launch {
+    height: calc(var(--phone-width) * 2 + 2rem);
+    padding-block: 1rem;
+  }
+
+  .phone-traveler {
+    width: var(--phone-width);
     flex-shrink: 0;
+  }
+
+  .phone-frame {
+    display: flex;
     aspect-ratio: 9 / 18;
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    .phone-parallax {
-      transform: translate3d(0, var(--phone-parallax-y, 0px), 0);
-      will-change: transform;
+  .how-section {
+    padding-block: 4rem;
+    scroll-margin-top: 2rem;
+  }
+
+  .how-layout {
+    display: grid;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .phone-dock {
+    display: none;
+    width: var(--dock-width);
+    aspect-ratio: 9 / 18;
+    justify-self: center;
+    align-self: center;
+  }
+
+  .how-cards {
+    display: grid;
+    gap: 1.5rem;
+    min-width: 0;
+  }
+
+  .how-card {
+    min-width: 0;
+  }
+
+  [data-story-ready] .phone-traveler {
+    position: absolute;
+    z-index: 2;
+    top: 1rem;
+    left: 50%;
+    transform-origin: top center;
+    transform: translate3d(-50%, var(--phone-travel, 0px), 0) scale(var(--phone-scale, 1));
+    will-change: transform;
+  }
+
+  [data-story-ready] .phone-dock {
+    display: block;
+  }
+
+  [data-story-ready] .stage-halo {
+    opacity: calc(1 - var(--story-progress, 0));
+  }
+
+  [data-story-ready] .how-heading-content {
+    opacity: var(--how-heading-opacity, 0);
+    transform: translateY(var(--how-heading-y, 0px));
+  }
+
+  [data-story-ready] .how-card {
+    opacity: var(--cards-open, 0);
+    transform: translateY(calc((1 - var(--cards-open, 0)) * -4rem));
+  }
+
+  @media (width >= 64rem) {
+    .how-section {
+      padding-block: 5rem;
+    }
+
+    .how-cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    [data-story-ready] .phone-dock,
+    [data-story-ready] .how-cards {
+      grid-area: 1 / 1;
+    }
+
+    [data-story-ready] .how-cards {
+      grid-template-columns: minmax(0, 1fr) var(--dock-width) minmax(0, 1fr);
+      column-gap: clamp(1.5rem, 3vw, 3rem);
+    }
+
+    [data-story-ready] .how-card {
+      --card-direction: 1;
+      transform: translateX(calc((1 - var(--cards-open, 0)) * var(--card-direction) * 3rem));
+    }
+
+    [data-story-ready] .how-card:nth-child(1) {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    [data-story-ready] .how-card:nth-child(2) {
+      --card-direction: -1;
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    [data-story-ready] .how-card:nth-child(3) {
+      grid-column: 1;
+      grid-row: 2;
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .message-stage {
-      padding-bottom: 1rem;
+  @media (prefers-reduced-motion: no-preference) {
+    .phone-frame {
+      animation: phone-float 5s ease-in-out infinite;
+    }
+
+    .phone-traveler:focus-within .phone-frame {
+      animation-play-state: paused;
+    }
+  }
+
+  @keyframes phone-float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-0.5rem);
     }
   }
 
