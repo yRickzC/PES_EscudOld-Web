@@ -51,7 +51,7 @@ const alternateHref = getRelativeLocaleUrl(alternateLocale);
           <a data-reveal class="flex min-h-11 items-center rounded-lg px-2 text-base font-semibold tracking-tight sm:px-3 sm:text-lg" href={getRelativeLocaleUrl(locale)}>
             EscudOld
           </a>
-          <nav data-reveal aria-label={t('navigation')} class="order-2 flex w-full flex-wrap items-center justify-center gap-1 border-t border-outline-variant/60 pt-2 text-sm sm:order-1 sm:ml-auto sm:w-auto sm:border-t-0 sm:pt-0">
+          <nav id="header-navigation" aria-label={t('navigation')} class="mobile-navigation order-2 flex w-full flex-wrap items-center justify-center gap-1 border-t border-outline-variant/60 pt-2 text-sm sm:order-1 sm:ml-auto sm:w-auto sm:border-t-0 sm:pt-0">
             <a class="inline-flex min-h-11 items-center rounded-xl px-2.5 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface sm:px-3" href="#projeto">
               {t('project')}
             </a>
@@ -88,6 +88,22 @@ const alternateHref = getRelativeLocaleUrl(alternateLocale);
                 <path d="M20.9 13.1A8.5 8.5 0 0 1 10.9 3.1a8.5 8.5 0 1 0 10 10Z" />
               </svg>
             </button>
+            <button
+              type="button"
+              class="menu-toggle grid size-11 shrink-0 cursor-pointer place-items-center rounded-xl border border-outline-variant bg-surface-container-low text-on-surface hover:border-primary hover:bg-primary-container hover:text-on-primary-container"
+              aria-controls="header-navigation"
+              aria-expanded="false"
+              aria-label={locale === 'pt-br' ? 'Abrir menu' : 'Open menu'}
+              data-open-label={locale === 'pt-br' ? 'Abrir menu' : 'Open menu'}
+              data-close-label={locale === 'pt-br' ? 'Fechar menu' : 'Close menu'}
+            >
+              <svg class="menu-open-icon size-5" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              <svg class="menu-close-icon size-5" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                <path d="m6 6 12 12M6 18 18 6" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -122,6 +138,33 @@ const alternateHref = getRelativeLocaleUrl(alternateLocale);
 
       const header = document.querySelector<HTMLElement>('[data-scroll-header]');
 
+      const menuToggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+      const navigation = document.querySelector<HTMLElement>('#header-navigation');
+
+      if (header && menuToggle && navigation) {
+        const setMenuOpen = (open: boolean) => {
+          menuToggle.setAttribute('aria-expanded', String(open));
+          menuToggle.setAttribute('aria-label', (open ? menuToggle.dataset.closeLabel : menuToggle.dataset.openLabel) ?? 'Menu');
+          header.toggleAttribute('data-menu-open', open);
+        };
+
+        header.setAttribute('data-menu-ready', '');
+        menuToggle.addEventListener('click', () => setMenuOpen(menuToggle.getAttribute('aria-expanded') !== 'true'));
+        navigation.addEventListener('click', (event) => {
+          if (event.target instanceof Element && event.target.closest('a')) setMenuOpen(false);
+        });
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && menuToggle.getAttribute('aria-expanded') === 'true') {
+            setMenuOpen(false);
+            menuToggle.focus();
+          }
+        });
+        document.addEventListener('click', (event) => {
+          if (event.target instanceof Node && !header.contains(event.target)) setMenuOpen(false);
+        });
+        window.matchMedia('(min-width: 640px)').addEventListener('change', () => setMenuOpen(false));
+      }
+
       if (header) {
         let lastScrollY = Math.max(0, window.scrollY);
 
@@ -129,7 +172,7 @@ const alternateHref = getRelativeLocaleUrl(alternateLocale);
           const scrollY = Math.max(0, window.scrollY);
           header.toggleAttribute('data-scrolled', scrollY > 0);
 
-          if (scrollY === 0 || scrollY < lastScrollY) {
+          if (header.hasAttribute('data-menu-open') || scrollY === 0 || scrollY < lastScrollY) {
             header.removeAttribute('data-hidden');
           } else if (scrollY > lastScrollY) {
             header.setAttribute('data-hidden', '');
@@ -179,11 +222,43 @@ const alternateHref = getRelativeLocaleUrl(alternateLocale);
 </html>
 
 <style>
+  .menu-toggle,
+  .menu-close-icon {
+    display: none;
+  }
+
+  @media (width < 640px) {
+    [data-menu-ready] .menu-toggle {
+      display: grid;
+    }
+
+    [data-menu-ready]:not([data-menu-open]) .mobile-navigation {
+      display: none;
+    }
+
+    .mobile-navigation {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .mobile-navigation a {
+      justify-content: center;
+    }
+
+    [data-menu-open] .menu-open-icon {
+      display: none;
+    }
+
+    [data-menu-open] .menu-close-icon {
+      display: block;
+    }
+  }
+
   .site-header[data-scrolled] .header-panel {
     background: color-mix(in srgb, var(--md-sys-color-surface-container-low) 98%, transparent);
   }
 
-  .site-header[data-hidden]:not(:has(:focus-visible)) {
+  .site-header[data-hidden]:not([data-menu-open]):not(:has(:focus-visible)) {
     transform: translateY(-100%);
     opacity: 0;
     pointer-events: none;
