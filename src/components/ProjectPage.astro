@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectInfo from './project/ProjectInfo.astro';
+import ProjectEvidence from './project/ProjectEvidence.astro';
+import ProjectPlan from './project/ProjectPlan.astro';
+import ProjectParticipation from './project/ProjectParticipation.astro';
+import { projectContent } from '../i18n/project';
+import type { Locale } from '../i18n/ui';
+import '../styles/project.css';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const content = projectContent[locale];
+---
+
+<BaseLayout locale={locale} title={content.pageTitle} description={content.description} page="project">
+  <div class="project-page">
+    <ProjectInfo content={content.info} common={content.common} />
+    <ProjectEvidence content={content.evidence} common={content.common} />
+    <ProjectPlan project={content.project} roadmap={content.roadmap} />
+    <ProjectParticipation locale={locale} figma={content.figma} needs={content.needs} support={content.support} common={content.common} />
+  </div>
+</BaseLayout>

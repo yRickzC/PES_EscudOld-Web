@@ -1,6 +1,5 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import ImagePlaceholder from './ImagePlaceholder.astro';
 import { useTranslations, type Locale } from '../i18n/ui';
 import { landingContent } from '../i18n/landing';
 
@@ -15,6 +14,12 @@ const scrollHint = locale === 'pt-br'
   ? 'Role para acompanhar as mensagens. Com o foco nesta área, use as setas para trocar a mensagem.'
   : 'Scroll to follow the messages. When this area is focused, use the arrow keys to change the message.';
 const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-projeto/' : 'about-the-project/');
+const assetBase = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/assets/`;
+const phoneVideos = [
+  { phase: 1, sources: [{ file: 'inicial.mp4', type: 'video/mp4' }] },
+  { phase: 2, sources: [{ file: 'anim02.mp4', type: 'video/mp4' }] },
+  { phase: 3, sources: [{ file: 'anim-final.mp4', type: 'video/mp4' }] },
+];
 ---
 
 <section class="hero relative isolate" aria-labelledby="hero-title" data-phone-story>
@@ -42,13 +47,23 @@ const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-p
     <div class="stage-halo pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true"></div>
     <div class="phone-traveler" data-story-phone>
       <div class="phone-frame relative w-full rounded-[2.25rem] border border-outline bg-surface-container-lowest p-2 shadow-2xl shadow-shadow/40 ring-4 ring-primary/8">
-        <div class="phone-screen rounded-[1.75rem] border border-outline-variant bg-surface-container-low px-3 pt-2 pb-3">
-          <div class="mx-auto h-3.5 w-16 rounded-full bg-surface-container-highest" aria-hidden="true"></div>
-          <div class="mt-4 border-b border-outline-variant/75 pb-3 leading-tight" aria-hidden="true">
-            <p class="text-sm font-semibold text-on-surface">EscudOld</p>
-            <p class="mt-0.5 text-xs text-on-surface-variant">WhatsApp</p>
-          </div>
-          <ImagePlaceholder id="phone-image-description" name={t('phoneImage')} description={t('phoneImageDescription')} />
+        <div class="phone-screen relative rounded-[1.75rem] border border-outline-variant" role="img" aria-label={t('phoneImageDescription')}>
+          <div class="phone-notch" aria-hidden="true"></div>
+          {phoneVideos.map((video, index) => (
+            <video
+              class="phone-video"
+              data-phone-video={video.phase}
+              data-video-visible={index === 0 ? '' : undefined}
+              muted
+              playsinline
+              preload={index === 0 ? 'auto' : 'metadata'}
+              disablepictureinpicture
+              tabindex="-1"
+              aria-hidden="true"
+            >
+              {video.sources.map((source) => <source src={`${assetBase}${source.file}`} type={source.type} />)}
+            </video>
+          ))}
         </div>
       </div>
     </div>
@@ -368,7 +383,34 @@ const projectHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-p
     min-width: 0;
     min-height: 0;
     overflow: hidden;
-    background-image: radial-gradient(ellipse at top right, color-mix(in srgb, var(--md-sys-color-primary) 12%, transparent), transparent 65%);
+    background: #000;
+  }
+
+  .phone-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .phone-video[data-video-visible] {
+    opacity: 1;
+  }
+
+  .phone-notch {
+    position: absolute;
+    z-index: 1;
+    top: 0.5rem;
+    left: 50%;
+    width: 4rem;
+    height: 0.875rem;
+    border-radius: 999px;
+    background: #202526;
+    transform: translateX(-50%);
+    pointer-events: none;
   }
 
   .chat-mark {

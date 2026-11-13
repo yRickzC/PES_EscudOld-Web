@@ -1,0 +1,114 @@
+---
+import type { ProjectContent } from '../../i18n/project';
+
+interface Props {
+  content: ProjectContent['evidence'];
+  common: ProjectContent['common'];
+}
+
+const { content, common } = Astro.props;
+---
+
+<section id="embasamento" class="project-section project-evidence" aria-labelledby="project-evidence-title">
+  <div class="project-container">
+    <div data-evidence-carousel role="group" aria-roledescription={content.carousel} aria-labelledby="project-evidence-title" data-position-label={content.position}>
+      <div class="project-section-heading">
+        <header>
+          <p data-reveal class="project-eyebrow">{content.label}</p>
+          <h2 data-reveal id="project-evidence-title" class="project-title">{content.title.map((line) => <span>{line}</span>)}</h2>
+          <p data-reveal class="project-description">{content.description}</p>
+        </header>
+        <div class="project-carousel-controls" data-evidence-controls hidden>
+          <button type="button" class="project-icon-button" data-evidence-previous aria-controls="project-evidence-track" aria-label={content.previous}>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6" /></svg>
+          </button>
+          <p data-evidence-position class="project-carousel-position" aria-live="polite" aria-atomic="true"></p>
+          <button type="button" class="project-icon-button" data-evidence-next aria-controls="project-evidence-track" aria-label={content.next}>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m10 6 6 6-6 6" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <ol id="project-evidence-track" class="project-evidence-track" data-evidence-track tabindex="0" role="list" aria-labelledby="project-evidence-title">
+        {content.items.map((item, index) => (
+          <li class="project-evidence-slot" data-evidence-card>
+            <article class="project-evidence-card" aria-labelledby={`evidence-${index}-title`}>
+              <div class="project-evidence-topline">
+                <span class="project-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                <span class="project-tag">{item.publisher ?? content.pending}</span>
+              </div>
+              <div class="project-evidence-mark" aria-hidden="true">
+                <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 10h29l7 7v37H14zM43 10v8h7M23 29h18M23 36h18M23 43h11" /><path d="m8 20-3 3v31a5 5 0 0 0 5 5h30" /></svg>
+              </div>
+              <h3 id={`evidence-${index}-title`}>{item.topic}</h3>
+              <p class="project-muted">{item.description}</p>
+              <div class="project-evidence-source">
+                {item.publishedAt && <time datetime={item.publishedAt}>{item.publishedAt}</time>}
+                {item.href ? (
+                  <a class="project-text-link" href={item.href} target="_blank" rel="noopener noreferrer" aria-label={`${content.read}: ${item.topic} (${common.newTab})`}>
+                    {content.read}<span aria-hidden="true">↗</span>
+                  </a>
+                ) : <p class="project-note">{content.pendingSource}</p>}
+              </div>
+            </article>
+          </li>
+        ))}
+      </ol>
+    </div>
+    <p class="project-note">{content.note}</p>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-evidence-carousel]').forEach((carousel) => {
+    const track = carousel.querySelector<HTMLOListElement>('[data-evidence-track]');
+    const cards = Array.from(carousel.querySelectorAll<HTMLElement>('[data-evidence-card]'));
+    const controls = carousel.querySelector<HTMLElement>('[data-evidence-controls]');
+    const previous = carousel.querySelector<HTMLButtonElement>('[data-evidence-previous]');
+    const next = carousel.querySelector<HTMLButtonElement>('[data-evidence-next]');
+    const position = carousel.querySelector<HTMLElement>('[data-evidence-position]');
+    if (!track || !cards.length || !controls || !previous || !next || !position) return;
+
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const cardOffset = (index: number) => cards[index].offsetLeft - cards[0].offsetLeft;
+    const currentIndex = () => cards.reduce((closest, _, index) => (
+      Math.abs(cardOffset(index) - track.scrollLeft) < Math.abs(cardOffset(closest) - track.scrollLeft) ? index : closest
+    ), 0);
+
+    const update = () => {
+      const end = track.scrollWidth - track.clientWidth;
+      controls.hidden = end <= 2;
+      previous.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= end - 2;
+      const label = (carousel.dataset.positionLabel ?? '{current} / {total}')
+        .replace('{current}', String(currentIndex() + 1))
+        .replace('{total}', String(cards.length));
+      if (position.textContent !== label) position.textContent = label;
+    };
+
+    const move = (index: number) => {
+      const target = Math.max(0, Math.min(cards.length - 1, index));
+      track.scrollTo({ left: cardOffset(target), behavior: motionPreference.matches ? 'instant' : 'smooth' });
+    };
+
+    previous.addEventListener('click', () => move(currentIndex() - 1));
+    next.addEventListener('click', () => move(currentIndex() + 1));
+    track.addEventListener('scroll', update, { passive: true });
+    track.addEventListener('keydown', (event) => {
+      if (event.target !== track) return;
+      const destinations: Record<string, number> = {
+        ArrowLeft: currentIndex() - 1,
+        ArrowRight: currentIndex() + 1,
+        Home: 0,
+        End: cards.length - 1,
+      };
+      if (!(event.key in destinations)) return;
+      event.preventDefault();
+      move(destinations[event.key]);
+    });
+
+    if ('ResizeObserver' in window) new ResizeObserver(update).observe(track);
+    else window.addEventListener('resize', update);
+    update();
+  });
+</script>

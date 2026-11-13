@@ -1,0 +1,58 @@
+---
+import type { ProjectContent } from '../../i18n/project';
+
+interface Props {
+  content: ProjectContent['info'];
+  common: ProjectContent['common'];
+}
+
+const { content, common } = Astro.props;
+const image = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/assets/old.jpeg`;
+---
+
+<section id="info" class="project-info project-container" aria-labelledby="project-title">
+  <div class="project-hero">
+    <header>
+      <p data-reveal class="project-eyebrow">{content.label}</p>
+      <h1 data-reveal id="project-title">{content.title.map((line) => <span>{line}</span>)}</h1>
+      <p data-reveal class="project-description">{content.description}</p>
+      <div data-reveal class="project-actions">
+        <a class="project-button" href="#projeto">{content.action}<span aria-hidden="true">↓</span></a>
+        <a class="project-text-link" href="#apoie">{content.secondaryAction}<span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+    <figure data-reveal class="project-hero-image">
+      <img src={image} alt={content.imageAlt} width="640" height="427" decoding="async" />
+      <figcaption>{content.imageCaption}</figcaption>
+    </figure>
+  </div>
+
+  <div class="project-context project-split">
+    <div>
+      <p data-reveal class="project-eyebrow">{content.context}</p>
+      <h2 data-reveal class="project-title">{content.contextTitle}</h2>
+    </div>
+    <p data-reveal class="project-description">{content.contextDescription}</p>
+  </div>
+
+  <div class="project-data" aria-labelledby="project-data-title">
+    <h3 data-reveal id="project-data-title" class="project-eyebrow">{content.dataLabel}</h3>
+    <ul class="project-metrics" role="list">
+      {content.metrics.map((metric, index) => (
+        <li data-reveal class="project-metric">
+          <span class="project-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+          <p class:list={['project-metric-value', { 'is-pending': !metric.value }]}>{metric.value ?? content.pendingValue}</p>
+          <h4>{metric.label}</h4>
+          <p class="project-muted">{metric.description}</p>
+          <p class="project-source">
+            {metric.source && metric.href ? (
+              <a href={metric.href} target="_blank" rel="noopener noreferrer" aria-label={`${metric.source} (${common.newTab})`}>{metric.source}</a>
+            ) : metric.source ?? content.pendingSource}
+            {metric.period && <span> · {metric.period}</span>}
+          </p>
+        </li>
+      ))}
+    </ul>
+    <p class="project-note">{content.dataNote}</p>
+  </div>
+</section>

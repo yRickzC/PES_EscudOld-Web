@@ -8,14 +8,21 @@ interface Props {
   locale: Locale;
   title: string;
   description: string;
+  page?: 'home' | 'team' | 'project';
 }
 
-const { locale, title, description } = Astro.props;
+const { locale, title, description, page = 'home' } = Astro.props;
 const t = useTranslations(locale);
 const footer = landingContent[locale].footer;
 const alternateLocale = locale === 'pt-br' ? 'en' : 'pt-br';
 const alternateLabel = locale === 'pt-br' ? 'English' : 'Português (Brasil)';
-const alternateHref = getRelativeLocaleUrl(alternateLocale);
+const alternatePath = page === 'team'
+  ? (alternateLocale === 'pt-br' ? 'quem-somos/' : 'about-us/')
+  : page === 'project'
+    ? (alternateLocale === 'pt-br' ? 'sobre-o-projeto/' : 'about-the-project/')
+    : '';
+const alternateHref = getRelativeLocaleUrl(alternateLocale, alternatePath);
+const homeHref = getRelativeLocaleUrl(locale);
 ---
 
 <!doctype html>
@@ -52,10 +59,10 @@ const alternateHref = getRelativeLocaleUrl(alternateLocale);
             EscudOld
           </a>
           <nav id="header-navigation" aria-label={t('navigation')} class="mobile-navigation order-2 flex w-full flex-wrap items-center justify-center gap-1 border-t border-outline-variant/60 pt-2 text-sm sm:order-1 sm:ml-auto sm:w-auto sm:border-t-0 sm:pt-0">
-            <a class="inline-flex min-h-11 items-center rounded-xl px-2.5 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface sm:px-3" href={getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'quem-somos/' : 'about-us/')}>
+            <a aria-current={page === 'team' ? 'page' : undefined} class="inline-flex min-h-11 items-center rounded-xl px-2.5 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface sm:px-3" href={getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'quem-somos/' : 'about-us/')}>
               {t('whoWeAre')}
             </a>
-            <a class="inline-flex min-h-11 items-center rounded-xl px-2.5 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface sm:px-3" href={getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-projeto/' : 'about-the-project/')}>
+            <a aria-current={page === 'project' ? 'page' : undefined} class="inline-flex min-h-11 items-center rounded-xl px-2.5 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface sm:px-3" href={getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-projeto/' : 'about-the-project/')}>
               {t('aboutProject')}
             </a>
           </nav>
@@ -121,9 +128,9 @@ const alternateHref = getRelativeLocaleUrl(alternateLocale);
             <ul class="flex flex-wrap items-center gap-x-5 text-base">
               <li><a class="inline-flex min-h-11 items-center hover:text-primary hover:underline" href={getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'sobre-o-projeto/' : 'about-the-project/')}>{footer.project}</a></li>
               <li aria-hidden="true">/</li>
-              <li><a class="inline-flex min-h-11 items-center hover:text-primary hover:underline" href="#como-funciona">{footer.how}</a></li>
+              <li><a class="inline-flex min-h-11 items-center hover:text-primary hover:underline" href={`${homeHref}#como-funciona`}>{footer.how}</a></li>
               <li aria-hidden="true">/</li>
-              <li><a class="inline-flex min-h-11 items-center hover:text-primary hover:underline" href="#duvidas">{footer.faq}</a></li>
+              <li><a class="inline-flex min-h-11 items-center hover:text-primary hover:underline" href={`${homeHref}#duvidas`}>{footer.faq}</a></li>
             </ul>
           </nav>
           <p data-reveal class="mt-3 text-xs leading-relaxed">{footer.note}</p>
@@ -219,6 +226,11 @@ const alternateHref = getRelativeLocaleUrl(alternateLocale);
 </html>
 
 <style>
+  .mobile-navigation a[aria-current='page'] {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+  }
+
   .menu-toggle,
   .menu-close-icon {
     display: none;

@@ -21,6 +21,60 @@ if (story && intro && launch && phone && dock && how && heading && track && scen
   };
   let frame = 0;
   let active = 0;
+  const videos = Array.from(phone.querySelectorAll<HTMLVideoElement>('[data-phone-video]'));
+  let videoPhase = -1;
+  let selectedVideo = videos[0];
+  let phoneVisible = true;
+
+  const canPlayVideo = () => videoPhase > 0 && phoneVisible && !document.hidden && !reducedMotion.matches;
+
+  const syncVideoPlayback = () => {
+    videos.forEach(video => {
+      if (video !== selectedVideo || !canPlayVideo()) video.pause();
+    });
+    const video = selectedVideo;
+    if (!video || !canPlayVideo() || !video.paused || video.ended) return;
+    // Muted inline playback works without controls or a separate autoplay loop.
+    void video.play().then(() => {
+      if (video !== selectedVideo || !canPlayVideo()) video.pause();
+    }).catch(() => {
+      // Keep the current frame if the browser does not allow playback.
+    });
+  };
+
+  const showVideo = (video: HTMLVideoElement) => {
+    if (video !== selectedVideo || video.readyState < 2 || video.seeking) return;
+    videos.forEach(clip => clip.toggleAttribute('data-video-visible', clip === video));
+  };
+
+  const setVideoPhase = (phase: number) => {
+    if (phase === videoPhase) return;
+    const video = videos.find(clip => Number(clip.dataset.phoneVideo) === Math.max(1, phase));
+    if (!video) return;
+    videoPhase = phase;
+    selectedVideo = video;
+    videos.forEach(clip => clip.pause());
+    video.currentTime = 0;
+    showVideo(video);
+    syncVideoPlayback();
+  };
+
+  videos.forEach(video => {
+    video.muted = true;
+    video.addEventListener('loadeddata', () => {
+      showVideo(video);
+      if (video === selectedVideo) syncVideoPlayback();
+    });
+    video.addEventListener('seeked', () => showVideo(video));
+  });
+  document.addEventListener('visibilitychange', syncVideoPlayback);
+  if ('IntersectionObserver' in window) {
+    const videoObserver = new IntersectionObserver(([entry]) => {
+      phoneVisible = entry.isIntersecting;
+      syncVideoPlayback();
+    });
+    videoObserver.observe(phone);
+  }
 
   const placePhone = (parent: HTMLElement) => {
     if (phone.parentElement === parent) return;
@@ -56,6 +110,8 @@ if (story && intro && launch && phone && dock && how && heading && track && scen
     // lifts the current avatar/message pair and brings the next one from below.
     const transition = current === exchanges.length - 1 ? 0 : ease(clamp((sequence - current - 0.7) / 0.3));
     active = Math.min(current + (transition >= 0.5 ? 1 : 0), exchanges.length - 1);
+    // Four phases: a still opening, then one clip for each scroll step.
+    setVideoPhase(progress > 0 ? active + 1 : 0);
 
     exchanges.forEach((exchange, index) => {
       const isCurrent = index === current;
@@ -74,6 +130,7 @@ if (story && intro && launch && phone && dock && how && heading && track && scen
     story.toggleAttribute('data-story-ready', !reducedMotion.matches);
     help.hidden = reducedMotion.matches;
     if (reducedMotion.matches) {
+      setVideoPhase(0);
       placePhone(launch);
       scene.removeAttribute('tabindex');
       scene.removeAttribute('aria-describedby');

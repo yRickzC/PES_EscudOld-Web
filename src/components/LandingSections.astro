@@ -8,40 +8,52 @@ interface Props {
 
 const { locale } = Astro.props;
 const content = landingContent[locale];
-const signalIcons = [
-  'M12 8v4l3 2 M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
-  'M7 10V7a5 5 0 0 1 10 0v3 M6 10h12v11H6Z M12 14v3',
-  'm10 13 4-4 M8 16l-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0 M13 17a4 4 0 0 0 6 0l4-4a4 4 0 0 0-6-6l-1 1',
-  'M15 21v-2a5 5 0 0 0-10 0v2 M14 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z M18 8a3 3 0 0 1 0 6 M19 17a4 4 0 0 1 3 4',
+const assetBase = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/assets/`;
+const exampleBackground = `${assetBase}old.jpeg`;
+const signalImages = [
+  { file: 'pressao.avif', width: 984, height: 764 },
+  { file: 'senha.webp', width: 984, height: 554 },
+  { file: 'cobranca.jpeg', width: 973, height: 693 },
+  { file: 'fake.jpeg', width: 875, height: 662 },
 ];
 ---
 
 <div class="text-on-surface">
   <section aria-labelledby="signals-title" class="border-y border-outline-variant bg-surface-container dark:border-outline-variant/60">
     <div class="section-container py-16 md:py-20">
-      <p data-reveal class="eyebrow">{content.signals.label}</p>
-      <h2 data-reveal id="signals-title" class="section-title">{content.signals.title}</h2>
-      <p data-reveal class="section-description">{content.signals.description}</p>
-      <ul class="mt-9 grid gap-5 md:grid-cols-2">
+      <div class="mx-auto max-w-3xl text-center">
+        <p data-reveal class="eyebrow">{content.signals.label}</p>
+        <h2 data-reveal id="signals-title" class="section-title">{content.signals.title}</h2>
+        <p data-reveal class="section-description">{content.signals.description}</p>
+      </div>
+      <ul class="signals-track mt-9" role="list" tabindex="0" aria-labelledby="signals-title">
         {content.signals.items.map((signal, index) => (
-          <li data-reveal class="flex items-start gap-5 rounded-[1.125rem] border border-outline-variant bg-surface-container-lowest p-5 dark:border-primary/20 dark:bg-background lg:p-6">
-            <span class="grid size-12 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
-              <svg aria-hidden="true" class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d={signalIcons[index]} />
-              </svg>
-            </span>
-            <div>
-              <h3 class="text-xl leading-snug font-semibold lg:text-[1.375rem]">{signal.title}</h3>
-              <p class="mt-3 max-w-[47ch] text-base leading-relaxed text-on-surface-variant lg:text-[1.0625rem]">{signal.description}</p>
-            </div>
+          <li data-reveal class="signal-slot min-w-0" style={`--float-delay: ${index * -1.6}s`}>
+            <article class="signal-card flex h-full flex-col overflow-hidden rounded-[1.125rem] border border-outline-variant bg-surface-container-lowest shadow-xl shadow-shadow/20 dark:border-primary/20 dark:bg-background dark:shadow-shadow/60">
+              <img
+                src={`${assetBase}${signalImages[index].file}`}
+                alt=""
+                width={signalImages[index].width}
+                height={signalImages[index].height}
+                loading="lazy"
+                decoding="async"
+                class="aspect-[4/3] w-full object-cover"
+              />
+              <div class="flex flex-1 flex-col p-5 lg:p-6">
+                <h3 class="text-lg leading-snug font-semibold lg:text-xl">{signal.title}</h3>
+                <p class="mt-3 text-base leading-relaxed text-on-surface-variant">{signal.description}</p>
+              </div>
+            </article>
           </li>
         ))}
       </ul>
     </div>
   </section>
 
-  <section id="exemplo" aria-labelledby="example-title" class="chapter border-b border-primary/45 bg-primary-container dark:border-primary/20 dark:bg-primary-container/30">
-    <div class="section-container py-16 md:py-20">
+  <section id="exemplo" aria-labelledby="example-title" class="chapter relative isolate overflow-hidden border-b border-primary/45 bg-primary-container dark:border-primary/20 dark:bg-primary-container/30">
+    <img src={exampleBackground} alt="" aria-hidden="true" width="640" height="427" loading="lazy" decoding="async" class="pointer-events-none absolute inset-0 h-full w-full object-cover object-[center_40%]" />
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 bg-primary-container/60 dark:bg-background/65"></div>
+    <div class="section-container relative z-10 py-16 md:py-20">
       <div class="rounded-[1.75rem] border border-primary/50 bg-surface-container-lowest p-6 dark:border-primary/30 dark:bg-surface-container-low md:p-10">
         <div class="grid gap-9 md:grid-cols-[1fr_1.15fr] md:gap-12">
           <div class="md:pr-1">
@@ -141,8 +153,6 @@ const signalIcons = [
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     let current = 0;
-    let hovered = false;
-    let focused = false;
     let inView = false;
     let timer: number | undefined;
 
@@ -158,24 +168,17 @@ const signalIcons = [
 
     const schedule = () => {
       window.clearTimeout(timer);
-      if (reducedMotion.matches || hovered || focused || !inView || document.hidden) return;
+      if (reducedMotion.matches || !inView || document.hidden) return;
       timer = window.setTimeout(() => {
         showSlide(current + 1);
         schedule();
-      }, 6000);
+      }, 5000);
     };
 
     selectors.forEach((button, index) => button.addEventListener('click', () => {
       showSlide(index);
       schedule();
     }));
-    carousel.addEventListener('mouseenter', () => { hovered = true; schedule(); });
-    carousel.addEventListener('mouseleave', () => { hovered = false; schedule(); });
-    carousel.addEventListener('focusin', () => { focused = true; schedule(); });
-    carousel.addEventListener('focusout', (event) => {
-      focused = event.relatedTarget instanceof Node && carousel.contains(event.relatedTarget);
-      schedule();
-    });
     document.addEventListener('visibilitychange', schedule);
     reducedMotion.addEventListener('change', schedule);
 
@@ -197,6 +200,64 @@ const signalIcons = [
 </script>
 
 <style>
+  .signals-track {
+    --signals-gutter: 1.5rem;
+    --signals-gap: 1rem;
+    display: grid;
+    grid-auto-flow: column;
+    /* One complete card and half the next, including the leading gutter. */
+    grid-auto-columns: calc((100% + var(--signals-gutter) - var(--signals-gap)) / 1.5);
+    gap: var(--signals-gap);
+    margin-inline: calc(-1 * var(--signals-gutter));
+    padding: 1.25rem var(--signals-gutter) 2.5rem;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--signals-gutter);
+    scrollbar-width: thin;
+    scrollbar-color: var(--md-sys-color-outline) transparent;
+  }
+
+  .signals-track:focus-visible {
+    outline: 2px solid var(--md-sys-color-primary);
+    outline-offset: 4px;
+  }
+
+  .signal-slot {
+    scroll-snap-align: start;
+  }
+
+  @media (width >= 40rem) {
+    .signals-track {
+      --signals-gutter: 2rem;
+    }
+  }
+
+  @media (width >= 64rem) {
+    .signals-track {
+      grid-auto-flow: row;
+      grid-auto-columns: auto;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.5rem;
+      margin-inline: 0;
+      padding-inline: 0;
+      overflow: visible;
+      scroll-snap-type: none;
+    }
+  }
+
+  @media (width >= 64rem) and (prefers-reduced-motion: no-preference) {
+    .signal-card {
+      animation: signal-float 6.4s ease-in-out infinite;
+      animation-delay: var(--float-delay, 0s);
+    }
+  }
+
+  @keyframes signal-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
   [data-carousel-controls]:not([hidden]) {
     display: flex;
   }
