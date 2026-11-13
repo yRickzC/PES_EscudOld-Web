@@ -53,12 +53,10 @@ const signalImages = [
           ))}
         </ul>
         <div class="signals-controls" data-signals-controls hidden>
-          <button type="button" class="signals-nav" data-signals-previous aria-controls="signals-slides" disabled>
+          <button type="button" class="signals-nav" data-signals-previous aria-controls="signals-slides" aria-label={previousSignal} disabled>
             <svg class="size-6 shrink-0" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6" /></svg>
-            <span>{previousSignal}</span>
           </button>
-          <button type="button" class="signals-nav signals-nav-next" data-signals-next aria-controls="signals-slides">
-            <span>{nextSignal}</span>
+          <button type="button" class="signals-nav" data-signals-next aria-controls="signals-slides" aria-label={nextSignal}>
             <svg class="size-6 shrink-0" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 6 6 6-6 6" /></svg>
           </button>
         </div>
@@ -219,6 +217,7 @@ const signalImages = [
 
 <style>
   .signals-slider {
+    position: relative;
     max-width: 52rem;
     margin-inline: auto;
   }
@@ -232,14 +231,17 @@ const signalImages = [
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
-    scrollbar-width: thin;
-    scrollbar-color: var(--md-sys-color-primary) transparent;
+    scrollbar-width: none;
     padding-block: 0.5rem 1.5rem;
   }
 
   .signals-slide {
     scroll-snap-align: start;
     scroll-snap-stop: always;
+  }
+
+  .signals-track::-webkit-scrollbar {
+    display: none;
   }
 
   .signals-track:focus-visible {
@@ -249,10 +251,15 @@ const signalImages = [
   }
 
   .signals-controls {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
-    margin-top: 1rem;
+    position: absolute;
+    top: 0.5rem;
+    inset-inline: 0.25rem;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    aspect-ratio: 4 / 3;
+    pointer-events: none;
   }
 
   .signals-controls[hidden] {
@@ -263,25 +270,19 @@ const signalImages = [
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    min-width: 0;
-    min-height: 4rem;
-    padding: 0.75rem;
-    border: 1px solid var(--md-sys-color-primary);
-    border-radius: 1rem;
-    background: var(--md-sys-color-surface-container-low);
-    color: var(--md-sys-color-primary);
-    font-weight: 600;
+    width: 2.75rem;
+    height: 3.5rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: white;
+    pointer-events: auto;
+    filter: drop-shadow(0 1px 3px rgb(0 0 0 / 85%));
     cursor: pointer;
   }
 
-  .signals-nav-next {
-    background: var(--md-sys-color-primary);
-    color: var(--md-sys-color-on-primary);
-  }
-
   .signals-nav:enabled:hover {
-    filter: brightness(1.1);
+    color: var(--md-sys-color-primary);
   }
 
   .signals-nav:disabled {
