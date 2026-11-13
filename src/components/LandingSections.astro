@@ -8,6 +8,8 @@ interface Props {
 
 const { locale } = Astro.props;
 const content = landingContent[locale];
+const previousSignal = locale === 'pt-br' ? 'Anterior' : 'Previous';
+const nextSignal = locale === 'pt-br' ? 'Próximo' : 'Next';
 const assetBase = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/assets/`;
 const exampleBackground = `${assetBase}old.jpeg`;
 const signalImages = [
@@ -26,27 +28,41 @@ const signalImages = [
         <h2 data-reveal id="signals-title" class="section-title">{content.signals.title}</h2>
         <p data-reveal class="section-description">{content.signals.description}</p>
       </div>
-      <ul class="mt-9 grid grid-cols-2 gap-3 pt-5 pb-10 sm:gap-5 lg:grid-cols-4 lg:gap-6" role="list" aria-labelledby="signals-title">
-        {content.signals.items.map((signal, index) => (
-          <li data-reveal class="min-w-0" style={`--float-delay: ${index * -1.6}s`}>
-            <article class="signal-card flex h-full flex-col overflow-hidden rounded-[1.125rem] border border-outline-variant bg-surface-container-lowest shadow-xl shadow-shadow/20 [overflow-wrap:anywhere] dark:border-primary/20 dark:bg-background dark:shadow-shadow/60">
-              <img
-                src={`${assetBase}${signalImages[index].file}`}
-                alt=""
-                width={signalImages[index].width}
-                height={signalImages[index].height}
-                loading="lazy"
-                decoding="async"
-                class="aspect-[4/3] w-full shrink-0 object-cover"
-              />
-              <div class="flex flex-1 flex-col p-3 sm:p-5 lg:p-6">
-                <h3 class="text-base leading-snug font-semibold sm:text-lg lg:text-xl">{signal.title}</h3>
-                <p class="mt-3 text-base leading-relaxed text-on-surface-variant">{signal.description}</p>
-              </div>
-            </article>
-          </li>
-        ))}
-      </ul>
+      <div class="signals-slider mt-9" data-signals-slider>
+        <ul id="signals-slides" class="signals-track" data-signals-track role="list" aria-labelledby="signals-title" tabindex="0">
+          {content.signals.items.map((signal, index) => (
+            <li class="signals-slide min-w-0" data-signal-slide>
+              <article class="signal-card flex h-full flex-col overflow-hidden rounded-[1.125rem] border border-outline-variant bg-surface-container-lowest shadow-xl shadow-shadow/20 [overflow-wrap:anywhere] sm:flex-row dark:border-primary/20 dark:bg-background dark:shadow-shadow/60">
+                <div class="relative aspect-[4/3] shrink-0 sm:aspect-auto sm:w-2/5">
+                  <img
+                    src={`${assetBase}${signalImages[index].file}`}
+                    alt=""
+                    width={signalImages[index].width}
+                    height={signalImages[index].height}
+                    loading="lazy"
+                    decoding="async"
+                    class="absolute inset-0 h-full w-full object-cover"
+                  />
+                </div>
+                <div class="flex flex-1 flex-col justify-center p-5 sm:min-h-72 sm:p-6 lg:p-8">
+                  <h3 class="text-xl leading-snug font-semibold lg:text-2xl">{signal.title}</h3>
+                  <p class="mt-3 text-base leading-relaxed text-on-surface-variant sm:text-lg">{signal.description}</p>
+                </div>
+              </article>
+            </li>
+          ))}
+        </ul>
+        <div class="signals-controls" data-signals-controls hidden>
+          <button type="button" class="signals-nav" data-signals-previous aria-controls="signals-slides" disabled>
+            <svg class="size-6 shrink-0" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6" /></svg>
+            <span>{previousSignal}</span>
+          </button>
+          <button type="button" class="signals-nav signals-nav-next" data-signals-next aria-controls="signals-slides">
+            <span>{nextSignal}</span>
+            <svg class="size-6 shrink-0" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 6 6 6-6 6" /></svg>
+          </button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -145,6 +161,8 @@ const signalImages = [
 </div>
 
 <script>
+  import '../scripts/signals-slider';
+
   document.querySelectorAll<HTMLElement>('[data-example-carousel]').forEach((carousel) => {
     const slides = Array.from(carousel.querySelectorAll<HTMLElement>('[data-carousel-slide]'));
     const selectors = Array.from(carousel.querySelectorAll<HTMLButtonElement>('[data-carousel-select]'));
@@ -200,16 +218,75 @@ const signalImages = [
 </script>
 
 <style>
-  @media (width >= 64rem) and (prefers-reduced-motion: no-preference) {
-    .signal-card {
-      animation: signal-float 6.4s ease-in-out infinite;
-      animation-delay: var(--float-delay, 0s);
-    }
+  .signals-slider {
+    max-width: 52rem;
+    margin-inline: auto;
   }
 
-  @keyframes signal-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+  .signals-track {
+    position: relative;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    gap: 1.5rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: var(--md-sys-color-primary) transparent;
+    padding-block: 0.5rem 1.5rem;
+  }
+
+  .signals-slide {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .signals-track:focus-visible {
+    outline: 2px solid var(--md-sys-color-primary);
+    outline-offset: 0.25rem;
+    border-radius: 1.125rem;
+  }
+
+  .signals-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .signals-controls[hidden] {
+    display: none;
+  }
+
+  .signals-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 0;
+    min-height: 4rem;
+    padding: 0.75rem;
+    border: 1px solid var(--md-sys-color-primary);
+    border-radius: 1rem;
+    background: var(--md-sys-color-surface-container-low);
+    color: var(--md-sys-color-primary);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .signals-nav-next {
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+  }
+
+  .signals-nav:enabled:hover {
+    filter: brightness(1.1);
+  }
+
+  .signals-nav:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
 
   [data-carousel-controls]:not([hidden]) {
