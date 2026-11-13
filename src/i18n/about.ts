@@ -13,9 +13,9 @@ interface TeamMember {
 export const aboutContent = {
   'pt-br': {
     title: 'Sobre nós',
-    pageTitle: 'Sobre nós | EscudOld',
-    description: 'Conheça Pedro Henrique (Rick), Lidia e Emily, a equipe por trás do EscudOld.',
-    introduction: 'Conheça quem está por trás do EscudOld. Tecnologia, criatividade e vontade de construir soluções que façam a diferença.',
+    pageTitle: 'Sobre nós | DOld',
+    description: 'Conheça Pedro Henrique (Rick), Lidia e Emily, a equipe por trás do DOld.',
+    introduction: 'Conheça quem está por trás do DOld. Tecnologia, criatividade e vontade de construir soluções que façam a diferença.',
     photoPlaceholder: 'Espaço para foto',
     photoOf: 'Foto de',
     profilesOf: 'Perfis de',
@@ -24,9 +24,9 @@ export const aboutContent = {
   },
   en: {
     title: 'About us',
-    pageTitle: 'About us | EscudOld',
-    description: 'Meet Pedro Henrique (Rick), Lidia and Emily, the team behind EscudOld.',
-    introduction: 'Meet the people behind EscudOld. Technology, creativity and a desire to build solutions that make a difference.',
+    pageTitle: 'About us | DOld',
+    description: 'Meet Pedro Henrique (Rick), Lidia and Emily, the team behind DOld.',
+    introduction: 'Meet the people behind DOld. Technology, creativity and a desire to build solutions that make a difference.',
     photoPlaceholder: 'Space for a photo',
     photoOf: 'Photo of',
     profilesOf: 'Profiles of',

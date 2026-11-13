@@ -26,10 +26,10 @@ const signalImages = [
         <h2 data-reveal id="signals-title" class="section-title">{content.signals.title}</h2>
         <p data-reveal class="section-description">{content.signals.description}</p>
       </div>
-      <ul class="signals-track mt-9" role="list" tabindex="0" aria-labelledby="signals-title">
+      <ul class="mt-9 grid grid-cols-2 gap-3 pt-5 pb-10 sm:gap-5 lg:grid-cols-4 lg:gap-6" role="list" aria-labelledby="signals-title">
         {content.signals.items.map((signal, index) => (
-          <li data-reveal class="signal-slot min-w-0" style={`--float-delay: ${index * -1.6}s`}>
-            <article class="signal-card flex h-full flex-col overflow-hidden rounded-[1.125rem] border border-outline-variant bg-surface-container-lowest shadow-xl shadow-shadow/20 dark:border-primary/20 dark:bg-background dark:shadow-shadow/60">
+          <li data-reveal class="min-w-0" style={`--float-delay: ${index * -1.6}s`}>
+            <article class="signal-card flex h-full flex-col overflow-hidden rounded-[1.125rem] border border-outline-variant bg-surface-container-lowest shadow-xl shadow-shadow/20 [overflow-wrap:anywhere] dark:border-primary/20 dark:bg-background dark:shadow-shadow/60">
               <img
                 src={`${assetBase}${signalImages[index].file}`}
                 alt=""
@@ -37,10 +37,10 @@ const signalImages = [
                 height={signalImages[index].height}
                 loading="lazy"
                 decoding="async"
-                class="aspect-[4/3] w-full object-cover"
+                class="aspect-[4/3] w-full shrink-0 object-cover"
               />
-              <div class="flex flex-1 flex-col p-5 lg:p-6">
-                <h3 class="text-lg leading-snug font-semibold lg:text-xl">{signal.title}</h3>
+              <div class="flex flex-1 flex-col p-3 sm:p-5 lg:p-6">
+                <h3 class="text-base leading-snug font-semibold sm:text-lg lg:text-xl">{signal.title}</h3>
                 <p class="mt-3 text-base leading-relaxed text-on-surface-variant">{signal.description}</p>
               </div>
             </article>
@@ -200,52 +200,6 @@ const signalImages = [
 </script>
 
 <style>
-  .signals-track {
-    --signals-gutter: 1.5rem;
-    --signals-gap: 1rem;
-    display: grid;
-    grid-auto-flow: column;
-    /* One complete card and half the next, including the leading gutter. */
-    grid-auto-columns: calc((100% + var(--signals-gutter) - var(--signals-gap)) / 1.5);
-    gap: var(--signals-gap);
-    margin-inline: calc(-1 * var(--signals-gutter));
-    padding: 1.25rem var(--signals-gutter) 2.5rem;
-    overflow-x: auto;
-    overscroll-behavior-inline: contain;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: var(--signals-gutter);
-    scrollbar-width: thin;
-    scrollbar-color: var(--md-sys-color-outline) transparent;
-  }
-
-  .signals-track:focus-visible {
-    outline: 2px solid var(--md-sys-color-primary);
-    outline-offset: 4px;
-  }
-
-  .signal-slot {
-    scroll-snap-align: start;
-  }
-
-  @media (width >= 40rem) {
-    .signals-track {
-      --signals-gutter: 2rem;
-    }
-  }
-
-  @media (width >= 64rem) {
-    .signals-track {
-      grid-auto-flow: row;
-      grid-auto-columns: auto;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1.5rem;
-      margin-inline: 0;
-      padding-inline: 0;
-      overflow: visible;
-      scroll-snap-type: none;
-    }
-  }
-
   @media (width >= 64rem) and (prefers-reduced-motion: no-preference) {
     .signal-card {
       animation: signal-float 6.4s ease-in-out infinite;

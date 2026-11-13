@@ -102,7 +102,7 @@ const { content, common } = Astro.props;
         Home: 0,
         End: cards.length - 1,
       };
-      if (!(event.key in destinations)) return;
+      if (!Object.hasOwn(destinations, event.key)) return;
       event.preventDefault();
       move(destinations[event.key]);
     });

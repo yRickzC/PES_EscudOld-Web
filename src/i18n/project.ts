@@ -52,13 +52,13 @@ const enEvidence: ProjectEvidence[] = [
 ];
 
 const pt = {
-  pageTitle: 'Sobre o projeto | EscudOld',
-  description: 'Entenda a proposta do EscudOld, suas próximas etapas e como apoiar uma ideia de proteção digital para pessoas idosas.',
-  common: { newTab: 'abre em nova aba', pendingLink: 'Link pendente' },
+  pageTitle: 'Sobre o projeto | DOld',
+  description: 'Entenda a proposta do DOld, suas próximas etapas e como apoiar uma ideia de proteção digital para pessoas idosas.',
+  common: { newTab: 'abre em nova aba' },
   info: {
     label: 'Sobre o projeto',
     title: ['Uma pausa pode proteger', 'uma história inteira.'],
-    description: 'O EscudOld nasce de uma dúvida cotidiana: em quem confiar quando uma mensagem parece real? Nossa proposta é ajudar pessoas idosas a entender os sinais antes de clicar.',
+    description: 'O DOld nasce de uma dúvida cotidiana: em quem confiar quando uma mensagem parece real? Nossa proposta é ajudar pessoas idosas a entender os sinais antes de clicar.',
     action: 'Entenda a proposta',
     secondaryAction: 'Quero apoiar',
     imageAlt: 'Pessoa idosa usando um celular.',
@@ -118,7 +118,7 @@ const pt = {
     pending: 'Link do Figma pendente',
     note: 'O endereço do protótipo ainda não foi adicionado.',
     previewLabel: 'Estudo de conversa · Ilustrativo',
-    previewName: 'EscudOld',
+    previewName: 'DOld',
     previewQuestion: 'Recebi uma cobrança por mensagem. Como posso conferir?',
     previewAnswer: 'Uma cobrança inesperada merece cuidado. Antes de pagar, confirme pelo aplicativo ou site oficial da empresa.',
     previewHint: 'Uma explicação clara. Um próximo passo compreensível.',
@@ -138,7 +138,7 @@ const pt = {
   support: {
     label: 'Apoie no IA4Good',
     title: ['Ajude esta ideia a chegar', 'a quem precisa.'],
-    description: 'Apoie o EscudOld no IA4Good e faça parte da construção de uma tecnologia pensada para a autonomia de pessoas idosas.',
+    description: 'Apoie o DOld no IA4Good e faça parte da construção de uma tecnologia pensada para a autonomia de pessoas idosas.',
     action: 'Apoiar no IA4Good',
     nextStep: 'Você será direcionado à página do projeto no IA4Good para conhecer as formas de apoio disponíveis.',
     pending: 'O link do projeto no IA4Good ainda não foi adicionado. O acesso ao apoio ficará disponível aqui.',
@@ -147,13 +147,13 @@ const pt = {
 };
 
 const en: typeof pt = {
-  pageTitle: 'About the project | EscudOld',
-  description: 'Discover the EscudOld proposal, its next steps and how to support an idea for older adults’ digital safety.',
-  common: { newTab: 'opens in a new tab', pendingLink: 'Link pending' },
+  pageTitle: 'About the project | DOld',
+  description: 'Discover the DOld proposal, its next steps and how to support an idea for older adults’ digital safety.',
+  common: { newTab: 'opens in a new tab' },
   info: {
     label: 'About the project',
     title: ['A pause can protect', 'a lifetime of stories.'],
-    description: 'EscudOld starts with an everyday question: who can you trust when a message looks real? Our proposal is to help older adults understand the warning signs before clicking.',
+    description: 'DOld starts with an everyday question: who can you trust when a message looks real? Our proposal is to help older adults understand the warning signs before clicking.',
     action: 'Understand the proposal',
     secondaryAction: 'I want to help',
     imageAlt: 'An older adult using a mobile phone.',
@@ -213,7 +213,7 @@ const en: typeof pt = {
     pending: 'Figma link pending',
     note: 'The prototype address has not been added yet.',
     previewLabel: 'Conversation study · Illustrative',
-    previewName: 'EscudOld',
+    previewName: 'DOld',
     previewQuestion: 'I received a payment request in a message. How can I check it?',
     previewAnswer: 'An unexpected payment request calls for caution. Before paying, check through the company’s official app or website.',
     previewHint: 'A clear explanation. An understandable next step.',
@@ -233,7 +233,7 @@ const en: typeof pt = {
   support: {
     label: 'Support us on IA4Good',
     title: ['Help this idea reach', 'the people who need it.'],
-    description: 'Support EscudOld on IA4Good and help build technology designed for older adults’ independence.',
+    description: 'Support DOld on IA4Good and help build technology designed for older adults’ independence.',
     action: 'Support on IA4Good',
     nextStep: 'You will be taken to the project’s IA4Good page to explore the available ways to support it.',
     pending: 'The project’s IA4Good link has not been added yet. Access to support will be available here.',

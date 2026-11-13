@@ -1,8 +1,8 @@
-# EscudOld — briefing da landing page
+# DOld — briefing da landing page
 
 ## Projeto em uma frase
 
-EscudOld usa IA para ajudar idosos a identificar golpes digitais antes de serem vítimas.
+DOld usa IA para ajudar idosos a identificar golpes digitais antes de serem vítimas.
 
 ## Problema social
 
@@ -16,7 +16,7 @@ EscudOld usa IA para ajudar idosos a identificar golpes digitais antes de serem 
 
 **Pergunta do formulário:** Considerando o problema abordado, qual sua proposta de solução? Como você utilizará inteligência artificial para resolver este problema?
 
-> A ideia é que o EscudOld funcione como alguém para perguntar antes de confiar. Pelo WhatsApp, o idoso poderia mandar um print, áudio, vídeo, link, mensagem ou simplesmente contar o que apareceu no celular. A IA analisaria aquilo, procuraria sinais de golpe, promessas suspeitas, manipulação e informações que possam ser confirmadas em fontes confiáveis. Em vez de dar uma resposta complicada, o sistema explicaria de forma simples se aquilo parece seguro ou não e por quê. Se o risco for alto, poderia orientar a pessoa a não pagar, não clicar ou não compartilhar dados e, se ela quiser, encaminhar a análise para um familiar ou pessoa de confiança.
+> A ideia é que o DOld funcione como alguém para perguntar antes de confiar. Pelo WhatsApp, o idoso poderia mandar um print, áudio, vídeo, link, mensagem ou simplesmente contar o que apareceu no celular. A IA analisaria aquilo, procuraria sinais de golpe, promessas suspeitas, manipulação e informações que possam ser confirmadas em fontes confiáveis. Em vez de dar uma resposta complicada, o sistema explicaria de forma simples se aquilo parece seguro ou não e por quê. Se o risco for alto, poderia orientar a pessoa a não pagar, não clicar ou não compartilhar dados e, se ela quiser, encaminhar a análise para um familiar ou pessoa de confiança.
 
 ## Pontos centrais para a página
 
