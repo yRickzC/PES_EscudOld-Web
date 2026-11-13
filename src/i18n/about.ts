@@ -89,6 +89,9 @@ export const teamMembers: TeamMember[] = [
         'I have an affinity for front-end development, but I am always open to exploring new paths and learning something different. I believe every project is an opportunity to grow and build something that makes a difference.',
       ],
     },
-    links: [{ label: 'GitHub', href: 'https://github.com/sweetie-dev' }],
+    links: [
+      { label: 'Site', href: 'https://thenivea.netlify.app/' },
+      { label: 'GitHub', href: 'https://github.com/sweetie-dev' },
+    ],
   },
 ];

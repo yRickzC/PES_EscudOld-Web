@@ -1,5 +1,6 @@
 ---
 import type { ProjectContent } from '../../i18n/project';
+import ProjectRoadmap from './ProjectRoadmap.astro';
 
 interface Props {
   project: ProjectContent['project'];
@@ -12,10 +13,12 @@ const { project, roadmap } = Astro.props;
 <section id="projeto" class="project-section project-container" aria-labelledby="project-overview-title">
   <div class="project-split">
     <header>
-      <p data-reveal class="project-eyebrow">{project.label}</p>
+      <div data-reveal class="project-topic">
+        <p class="project-eyebrow">{project.label}</p>
+        <p class="project-status">{project.status}</p>
+      </div>
       <h2 data-reveal id="project-overview-title" class="project-title">{project.title.map((line) => <span>{line}</span>)}</h2>
       <p data-reveal class="project-description">{project.description}</p>
-      <p data-reveal class="project-status"><span aria-hidden="true"></span>{project.status}</p>
     </header>
     <ol class="project-flow" role="list">
       {project.items.map((item, index) => (
@@ -29,27 +32,6 @@ const { project, roadmap } = Astro.props;
       ))}
     </ol>
   </div>
-  <p data-reveal class="project-limit-note">{project.note}</p>
 </section>
 
-<section id="roadmap" class="project-section project-roadmap" aria-labelledby="project-roadmap-title">
-  <div class="project-container">
-    <header class="project-roadmap-heading">
-      <p data-reveal class="project-eyebrow">{roadmap.label}</p>
-      <h2 data-reveal id="project-roadmap-title" class="project-title">{roadmap.title.map((line) => <span>{line}</span>)}</h2>
-      <p data-reveal class="project-description">{roadmap.description}</p>
-    </header>
-    <ol class="project-timeline" role="list">
-      {roadmap.items.map((item, index) => (
-        <li data-reveal>
-          <div class="project-timeline-marker"><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span></div>
-          <div class="project-timeline-content">
-            <p class="project-note">{roadmap.status}</p>
-            <h3>{item.title}</h3>
-            <p class="project-muted">{item.description}</p>
-          </div>
-        </li>
-      ))}
-    </ol>
-  </div>
-</section>
+<ProjectRoadmap content={roadmap} />

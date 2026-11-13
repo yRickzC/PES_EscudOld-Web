@@ -1,93 +1,71 @@
 ---
-import { getRelativeLocaleUrl } from 'astro:i18n';
 import { projectLinks, type ProjectContent } from '../../i18n/project';
-import type { Locale } from '../../i18n/ui';
 
 interface Props {
-  locale: Locale;
   figma: ProjectContent['figma'];
-  needs: ProjectContent['needs'];
   support: ProjectContent['support'];
   common: ProjectContent['common'];
 }
 
-const { locale, figma, needs, support, common } = Astro.props;
-const teamHref = getRelativeLocaleUrl(locale, locale === 'pt-br' ? 'quem-somos/' : 'about-us/');
+const { figma, support, common } = Astro.props;
+const figmaEmbedUrl = projectLinks.figma ? new URL(projectLinks.figma) : null;
+
+if (figmaEmbedUrl) {
+  figmaEmbedUrl.hostname = 'embed.figma.com';
+  figmaEmbedUrl.searchParams.delete('p');
+  figmaEmbedUrl.searchParams.set('embed-host', 'dold');
+}
 ---
 
 <section id="figma" class="project-section project-container" aria-labelledby="project-figma-title">
-  <div class="project-figma-panel project-split">
+  <div class="project-figma-panel">
     <header>
       <p data-reveal class="project-eyebrow">{figma.label}</p>
-      <h2 data-reveal id="project-figma-title" class="project-title">{figma.title.map((line) => <span>{line}</span>)}</h2>
-      <p data-reveal class="project-description">{figma.description}</p>
-      <div data-reveal class="project-figma-action">
-        {projectLinks.figma ? (
-          <a class="project-button" href={projectLinks.figma} target="_blank" rel="noopener noreferrer" aria-label={`${figma.action} (${common.newTab})`}>{figma.action}<span aria-hidden="true">↗</span></a>
-        ) : (
-          <>
-            <p class="project-pending-label">{figma.pending}</p>
-            <p class="project-note">{figma.note}</p>
-          </>
-        )}
-      </div>
-    </header>
-    <figure data-reveal class="project-conversation">
-      <figcaption class="project-eyebrow">{figma.previewLabel}</figcaption>
-      <div class="project-conversation-window">
-        <div class="project-conversation-header">
-          <span class="project-avatar" aria-hidden="true">E</span>
-          <p>{figma.previewName}</p>
-          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z" /><path d="m8 12 3 3 5-6" /></svg>
-        </div>
-        <div class="project-conversation-body">
-          <p class="project-chat-question">{figma.previewQuestion}</p>
-          <p class="project-chat-answer">{figma.previewAnswer}</p>
+      <div class="project-figma-heading">
+        <h2 data-reveal id="project-figma-title" class="project-title">{figma.title.map((line) => <span>{line}</span>)}</h2>
+        <div data-reveal class="project-figma-action">
+          {projectLinks.figma ? (
+            <a class="project-text-link" href={projectLinks.figma} target="_blank" rel="noopener noreferrer" aria-label={`${figma.action} (${common.newTab})`}>{figma.action}<span aria-hidden="true">↗</span></a>
+          ) : (
+            <>
+              <p class="project-pending-label">{figma.pending}</p>
+              <p class="project-note">{figma.note}</p>
+            </>
+          )}
         </div>
       </div>
-      <p class="project-note">{figma.previewHint}</p>
-    </figure>
-  </div>
-</section>
-
-<section id="necessidades" class="project-section project-container project-needs" aria-labelledby="project-needs-title">
-  <div class="project-section-heading">
-    <header>
-      <p data-reveal class="project-eyebrow">{needs.label}</p>
-      <h2 data-reveal id="project-needs-title" class="project-title">{needs.title.map((line) => <span>{line}</span>)}</h2>
-      <p data-reveal class="project-description">{needs.description}</p>
     </header>
-    <a data-reveal class="project-text-link" href={teamHref}>{needs.action}<span aria-hidden="true">↗</span></a>
+    {figmaEmbedUrl && (
+      <figure class="project-figma-preview">
+        <figcaption class="project-eyebrow">{figma.previewLabel}</figcaption>
+        <iframe
+          src={figmaEmbedUrl.href}
+          title={figma.previewTitle}
+          width="100%"
+          height="640"
+          loading="lazy"
+          allowfullscreen
+        ></iframe>
+      </figure>
+    )}
   </div>
-  <ul class="project-needs-list" role="list">
-    {needs.items.map((item, index) => (
-      <li data-reveal>
-        <span class="project-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-        <h3>{item.title}</h3>
-        <p class="project-muted">{item.description}</p>
-      </li>
-    ))}
-  </ul>
 </section>
 
 <section id="apoie" class="project-section project-container" aria-labelledby="project-support-title">
   <div class="project-support">
-    <p data-reveal class="project-eyebrow">{support.label}</p>
-    <h2 data-reveal id="project-support-title">{support.title.map((line) => <span>{line}</span>)}</h2>
-    <p data-reveal class="project-description">{support.description}</p>
+    <div class="project-support-copy">
+      <p data-reveal class="project-eyebrow">{support.label}</p>
+      <h2 data-reveal id="project-support-title">{support.title.map((line) => <span>{line}</span>)}</h2>
+      <p data-reveal class="project-description">{support.description}</p>
+    </div>
     <div data-reveal class="project-support-action">
       {projectLinks.ia4good ? (
-        <>
-          <a class="project-button" href={projectLinks.ia4good} target="_blank" rel="noopener noreferrer" aria-label={`${support.action} (${common.newTab})`}>{support.action}<span aria-hidden="true">↗</span></a>
-          <p class="project-note">{support.nextStep}</p>
-        </>
+        <a class="project-button" href={projectLinks.ia4good} target="_blank" rel="noopener noreferrer" aria-label={`${support.action} (${common.newTab})`}>{support.action}<span aria-hidden="true">↗</span></a>
       ) : (
-        <>
-          <button type="button" class="project-button" disabled aria-describedby="project-support-pending">{support.action}<span aria-hidden="true">↗</span></button>
-          <p id="project-support-pending" class="project-note">{support.pending}</p>
-        </>
+        <button type="button" class="project-button" disabled>{support.action}<span aria-hidden="true">↗</span></button>
       )}
+      <a class="project-back-link" href="#top">{support.backToTop}<span aria-hidden="true">↑</span></a>
+      {projectLinks.ia4good && <p class="project-note">{support.nextStep}</p>}
     </div>
-    <a class="project-back-link" href="#top">{support.backToTop}<span aria-hidden="true">↑</span></a>
   </div>
 </section>

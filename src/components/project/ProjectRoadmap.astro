@@ -1,0 +1,73 @@
+---
+import { projectCurrentStage, type ProjectContent } from '../../i18n/project';
+import ProjectRoadmapMap from './ProjectRoadmapMap.astro';
+
+interface Props {
+  content: ProjectContent['roadmap'];
+}
+
+const { content } = Astro.props;
+---
+
+<section id="roadmap" class="project-roadmap" aria-labelledby="project-roadmap-title">
+  <div class="project-container">
+    <header class="project-roadmap-heading">
+      <p class="project-eyebrow">{content.label}</p>
+      <h2 id="project-roadmap-title" class="project-title">{content.title.map((line) => <span>{line}</span>)}</h2>
+      <p class="project-description">{content.description}</p>
+    </header>
+
+    <nav class="project-roadmap-nav" aria-label={content.navigation}>
+      <ol role="list">
+        {content.items.map((item, index) => (
+          <li>
+            <a href={`#roadmap-${item.id}`} aria-current={item.id === projectCurrentStage ? 'step' : undefined}>
+              <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              {item.title}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+
+    <ol class="project-roadmap-stages" role="list">
+      {content.items.map((item, index) => (
+        <li>
+          <section
+            id={`roadmap-${item.id}`}
+            class:list={['project-roadmap-stage', { 'is-current': item.id === projectCurrentStage }]}
+            aria-labelledby={`roadmap-${item.id}-title`}
+          >
+            <div class="project-stage-copy">
+              <p class="project-stage-index">
+                <span class="project-stage-number">{String(index + 1).padStart(2, '0')}</span>
+                <span class="project-stage-label">{item.id === projectCurrentStage ? content.current : content.stage}</span>
+              </p>
+              <h3 id={`roadmap-${item.id}-title`}>{item.title}</h3>
+              <p class="project-muted">{item.description}</p>
+              <div class="project-stage-outcome">
+                <p class="project-stage-outcome-label">{content.outcome}</p>
+                <p>{item.outcome}</p>
+              </div>
+            </div>
+
+            <figure class="project-stage-map">
+              <ProjectRoadmapMap id={item.id} index={index} />
+              <figcaption>
+                <span class="sr-only">{content.mapLabel} {item.title}</span>
+                <ol class="project-map-legend" role="list">
+                  {item.stops.map((stop, stopIndex) => (
+                    <li class:list={{ 'is-highlighted': stopIndex === index }}>
+                      <span aria-hidden="true">{stopIndex + 1}</span>
+                      {stop}
+                    </li>
+                  ))}
+                </ol>
+              </figcaption>
+            </figure>
+          </section>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

@@ -125,14 +125,14 @@ const signalImages = [
 
   <div class="bg-background">
     <div class="section-container py-16 md:py-20">
-      <section aria-labelledby="closing-title" class="rounded-[1.75rem] bg-primary-fixed-dim p-6 text-on-primary-fixed md:p-10">
+      <section aria-labelledby="closing-title" class="rounded-[1.75rem] bg-primary-fixed-dim p-6 text-center text-on-primary-fixed md:p-10 lg:text-left">
         <p data-reveal class="text-xs leading-relaxed font-semibold uppercase">{content.closing.label}</p>
         <div class="mt-5 grid items-center gap-x-12 gap-y-7 lg:grid-cols-[minmax(0,1fr)_auto]">
           <h2 data-reveal id="closing-title" class="min-w-0 text-[clamp(1.875rem,3.2vw,3rem)] leading-[1.12] font-semibold tracking-[-0.025em]">
             {content.closing.title.map((line) => <span class="block">{line}</span>)}
           </h2>
           <p data-reveal class="min-w-0 text-base leading-relaxed lg:col-start-1 lg:row-start-2 lg:text-lg">{content.closing.description}</p>
-          <a data-reveal href="#como-funciona" class="inline-flex min-h-14 items-center justify-center gap-3 justify-self-start rounded-xl bg-on-primary-fixed px-6 py-3 text-sm font-semibold text-primary-fixed hover:bg-on-primary-fixed/90 lg:col-start-2 lg:row-start-1">
+          <a data-reveal href="#como-funciona" class="inline-flex min-h-14 items-center justify-center gap-3 justify-self-center rounded-xl bg-on-primary-fixed px-6 py-3 text-sm font-semibold text-primary-fixed hover:bg-on-primary-fixed/90 lg:col-start-2 lg:row-start-1 lg:justify-self-start">
             <span class="-translate-y-px leading-5">{content.closing.action}</span>
             <svg aria-hidden="true" class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 19V5m-6 6 6-6 6 6" />

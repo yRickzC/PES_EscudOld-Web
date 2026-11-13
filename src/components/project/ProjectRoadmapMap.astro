@@ -1,0 +1,67 @@
+---
+interface Props {
+  id: string;
+  index: number;
+}
+
+const { id, index } = Astro.props;
+const routes = [
+  {
+    path: 'M68 250 C140 250 128 190 204 190 S266 150 342 150 S414 78 476 78',
+    points: [{ x: 68, y: 250 }, { x: 204, y: 190 }, { x: 342, y: 150 }, { x: 476, y: 78 }],
+  },
+  {
+    path: 'M72 88 C142 88 134 182 212 182 S280 88 354 88 S420 246 488 246',
+    points: [{ x: 72, y: 88 }, { x: 212, y: 182 }, { x: 354, y: 88 }, { x: 488, y: 246 }],
+  },
+  {
+    path: 'M70 248 C142 248 140 108 212 108 S282 248 354 248 S416 108 488 108',
+    points: [{ x: 70, y: 248 }, { x: 212, y: 108 }, { x: 354, y: 248 }, { x: 488, y: 108 }],
+  },
+  {
+    path: 'M76 88 C144 88 144 224 212 224 S286 152 354 152 S418 78 484 78',
+    points: [{ x: 76, y: 88 }, { x: 212, y: 224 }, { x: 354, y: 152 }, { x: 484, y: 78 }],
+  },
+];
+const route = routes[index];
+const gridId = `roadmap-grid-${id}`;
+---
+
+<svg class="project-route-map" viewBox="0 0 560 324" fill="none" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id={gridId} width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" class="project-map-grid" />
+    </pattern>
+  </defs>
+  <rect width="560" height="324" fill={`url(#${gridId})`} />
+
+  <g class="project-map-terrain" transform={`rotate(${index * 90} 280 162)`}>
+    <path d="M-45 66C13-20 130-9 180 40S215 146 164 176 49 161 12 208-20 277-66 265" />
+    <path d="M-24 65C28 2 117 8 155 48S184 126 146 150 53 142 18 183-4 244-40 246" />
+    <path d="M-4 65C38 25 105 26 131 56S151 106 125 123 56 123 26 158 15 209-13 218" />
+    <path d="M21 65C54 45 88 45 105 63S118 91 101 103 61 102 40 130" />
+    <path d="M326 338C294 288 315 241 363 220S448 222 476 183 477 109 534 92 603 118 620 150" />
+    <path d="M351 342C320 298 337 261 377 243S461 244 495 202 499 134 543 117 590 133 601 155" />
+    <path d="M379 342C351 306 362 281 397 266S481 263 515 220 522 158 553 144 581 151 586 165" />
+    <path d="M410 343C389 317 391 302 421 288S501 282 535 242 544 185 565 174" />
+  </g>
+
+  <g class="project-map-compass" transform="translate(510 38)">
+    <path d="M0-15V15M-15 0H15" />
+    <path d="M0-15-4-6H4L0-15Z" fill="currentColor" stroke="none" />
+  </g>
+
+  <path d={route.path} class="project-map-route-underlay" />
+  <path d={route.path} class="project-map-route" />
+
+  {route.points.map((point, pointIndex) => (
+    <g
+      transform={`translate(${point.x} ${point.y})`}
+      class:list={['project-map-marker', { 'is-highlighted': pointIndex === index }]}
+    >
+      {pointIndex === index && <circle r="30" class="project-map-highlight" />}
+      <circle r="18" class="project-map-point" />
+      <text class="project-map-number" text-anchor="middle" dominant-baseline="central">{pointIndex + 1}</text>
+    </g>
+  ))}
+</svg>

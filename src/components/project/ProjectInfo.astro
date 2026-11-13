@@ -1,58 +1,65 @@
 ---
 import type { ProjectContent } from '../../i18n/project';
+import type { ProjectStatisticGroup } from '../../i18n/project-stats';
+import type { Locale } from '../../i18n/ui';
 
 interface Props {
+  locale: Locale;
   content: ProjectContent['info'];
-  common: ProjectContent['common'];
+  groups: ProjectStatisticGroup[];
 }
 
-const { content, common } = Astro.props;
-const image = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/assets/old.jpeg`;
+const { locale, content, groups } = Astro.props;
+const numberLocale = locale === 'pt-br' ? 'pt-BR' : 'en-US';
+const decimalSeparator = locale === 'pt-br' ? ',' : '.';
+const groupingSeparator = locale === 'pt-br' ? /\./g : /,/g;
+const statistics = groups.flatMap((group) => group.items.map((item) => {
+  const parts = item.value.match(/^(.*?)(\d[\d.,]*)(.*)$/);
+  const rawNumber = parts?.[2] ?? '';
+
+  return {
+    ...item,
+    category: group.title,
+    prefix: parts?.[1] ?? '',
+    rawNumber,
+    suffix: parts?.[3] ?? '',
+    target: Number(rawNumber.replace(groupingSeparator, '').replace(decimalSeparator, '.')),
+    decimals: rawNumber.split(decimalSeparator)[1]?.length ?? 0,
+  };
+}));
 ---
 
-<section id="info" class="project-info project-container" aria-labelledby="project-title">
-  <div class="project-hero">
-    <header>
-      <p data-reveal class="project-eyebrow">{content.label}</p>
-      <h1 data-reveal id="project-title">{content.title.map((line) => <span>{line}</span>)}</h1>
-      <p data-reveal class="project-description">{content.description}</p>
-      <div data-reveal class="project-actions">
-        <a class="project-button" href="#projeto">{content.action}<span aria-hidden="true">↓</span></a>
-        <a class="project-text-link" href="#apoie">{content.secondaryAction}<span aria-hidden="true">↗</span></a>
+<section id="info" class="project-info" aria-labelledby="project-context-title">
+  <div class="project-stats" data-project-stats data-number-locale={numberLocale} style={`--project-stats-duration: ${statistics.length * 9}s`}>
+    <div id="project-stats-window" class="project-stats-window" role="region" aria-label={content.statsLabel} tabindex="0">
+      <div class="project-stats-track">
+        {[0, 1].map((copy) => (
+          <div class:list={['project-stats-group', { 'project-stats-copy': copy === 1 }]} aria-hidden={copy === 1 ? 'true' : undefined}>
+            {statistics.map((statistic) => (
+              <article class="project-stat" data-stat-card>
+                <p class="sr-only">{statistic.category}</p>
+                <h2 class="project-stat-label">{statistic.label}</h2>
+                <p class="project-stat-value">
+                  <span class="sr-only">{statistic.value}</span>
+                  <span aria-hidden="true">{statistic.prefix}<span data-stat-number data-value={statistic.target} data-decimals={statistic.decimals}>{statistic.rawNumber}</span>{statistic.suffix}</span>
+                </p>
+              </article>
+            ))}
+          </div>
+        ))}
       </div>
-    </header>
-    <figure data-reveal class="project-hero-image">
-      <img src={image} alt={content.imageAlt} width="640" height="427" decoding="async" />
-      <figcaption>{content.imageCaption}</figcaption>
-    </figure>
+    </div>
   </div>
 
-  <div class="project-context project-split">
+  <div class="project-container project-context project-split">
     <div>
       <p data-reveal class="project-eyebrow">{content.context}</p>
-      <h2 data-reveal class="project-title">{content.contextTitle}</h2>
+      <h1 id="project-context-title" data-reveal class="project-title">{content.contextTitle}</h1>
     </div>
     <p data-reveal class="project-description">{content.contextDescription}</p>
   </div>
-
-  <div class="project-data" aria-labelledby="project-data-title">
-    <h3 data-reveal id="project-data-title" class="project-eyebrow">{content.dataLabel}</h3>
-    <ul class="project-metrics" role="list">
-      {content.metrics.map((metric, index) => (
-        <li data-reveal class="project-metric">
-          <span class="project-index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-          <p class:list={['project-metric-value', { 'is-pending': !metric.value }]}>{metric.value ?? content.pendingValue}</p>
-          <h4>{metric.label}</h4>
-          <p class="project-muted">{metric.description}</p>
-          <p class="project-source">
-            {metric.source && metric.href ? (
-              <a href={metric.href} target="_blank" rel="noopener noreferrer" aria-label={`${metric.source} (${common.newTab})`}>{metric.source}</a>
-            ) : metric.source ?? content.pendingSource}
-            {metric.period && <span> · {metric.period}</span>}
-          </p>
-        </li>
-      ))}
-    </ul>
-    <p class="project-note">{content.dataNote}</p>
-  </div>
 </section>
+
+<script>
+  import '../../scripts/project-stats';
+</script>

@@ -1,54 +1,84 @@
 import type { Locale } from './ui';
 
-interface ProjectMetric {
-  label: string;
-  description: string;
-  value: string | null;
-  source: string | null;
-  href: string | null;
-  period: string | null;
-}
-
 interface ProjectEvidence {
   topic: string;
   description: string;
-  publisher: string | null;
-  href: string | null;
-  publishedAt: string | null;
+  publisher: string;
+  href: string;
+  publishedAt: string;
+  publishedLabel: string;
+  image: string;
 }
 
 // Add confirmed campaign and prototype URLs here. Missing URLs stay non-interactive.
 export const projectLinks: { figma: string | null; ia4good: string | null } = {
-  figma: null,
+  figma: 'https://www.figma.com/design/drj1KiodD1iECtwcq1EHgl/Fluxo---Prot%C3%B3tipo-Escudo-60-?node-id=0-1&p=f',
   ia4good: null,
 };
 
-// No statistics or reporting sources have been supplied. Keep these slots explicit
-// until each figure has a source, a period and a matching population group.
-const ptMetrics: ProjectMetric[] = [
-  { label: 'Ocorrências de golpes', description: 'Registros de golpes contra pessoas idosas no Brasil.', value: null, source: null, href: null, period: null },
-  { label: 'Impacto financeiro', description: 'Prejuízos associados a fraudes contra esse público.', value: null, source: null, href: null, period: null },
-  { label: 'Evolução dos casos', description: 'Comparação entre períodos com o mesmo recorte de pesquisa.', value: null, source: null, href: null, period: null },
-  { label: 'Golpes mais recorrentes', description: 'Modalidades de fraude e canais usados para abordar pessoas idosas.', value: null, source: null, href: null, period: null },
-];
+export const projectCurrentStage = 'prototipo';
 
-const enMetrics: ProjectMetric[] = [
-  { label: 'Reported scams', description: 'Records of scams targeting older adults in Brazil.', value: null, source: null, href: null, period: null },
-  { label: 'Financial impact', description: 'Losses associated with fraud targeting this population.', value: null, source: null, href: null, period: null },
-  { label: 'Changes over time', description: 'Comparison of periods using the same research scope.', value: null, source: null, href: null, period: null },
-  { label: 'Most common scams', description: 'Types of fraud and channels used to approach older adults.', value: null, source: null, href: null, period: null },
-];
+const evidenceSources = {
+  serasa: {
+    publisher: 'Serasa',
+    href: 'https://www.serasa.com.br/imprensa/denunciar-fraudes-idosos-serasa/',
+    publishedAt: '2025-12',
+    image: 'https://images.openai.com/static-rsc-4/TNww-Dt0TLtSY0TeCFe5qXSusKD6P2BLjgKpjSKQF--4mjT_F3uoIyMMQsviz_N9MfBwGZE5ND5MqEgcxAyIYFCySoS4sh1dG17KeiTcwyyhAevlGsKzU2Tm51kjFGB0MIqSi5Ce-vBi-ESGKuxsJZHFxQ2NCizN9MzkR7nRSpm6C90j_N2A6UiBTOCl5IYb?purpose=inline',
+  },
+  pcgo: {
+    publisher: 'Polícia Civil de Goiás',
+    href: 'https://goias.gov.br/policiacivil/pcgo-investiga-golpe-do-falso-parente-e-cumpre-mandado-de-busca/',
+    publishedAt: '2025-09-08',
+    image: 'https://images.openai.com/static-rsc-4/VqRNNBUzv_RMmnJY0L7L-AUmmtU4arCS0ZHF4rYfJpIFpT0xpd-tbLAoIxP5KNiCVKH_0An_L666K8k582ftnzbNKnsHR-CcZB9cUrsweSndxewXpf8mRnGSEM8TkgY_hckUYA47UM8_Xx4wkyx79ZZPf86BEwBGAdCAhl9w7pQ?purpose=inline',
+  },
+  cldf: {
+    publisher: 'Câmara Legislativa do DF',
+    href: 'https://www.cl.df.gov.br/web/guest/-/procuradoria-do-idoso-da-cldf-alerta-criminosos-inovam-em-golpes-contra-idosos',
+    publishedAt: '2025-02-18',
+    image: 'https://images.openai.com/static-rsc-4/ck2HkNQHrY98qfvdJWz36mMs6WbsJNtE5XbSspNAvfIWjQmCqRd5bF48HbPNDYVDINRosWrLmtKgvmkKrF6ya0x--txDnqAq3Jnq5v4_2LLh2WJMKJxmKO1EttN4-D3c1-Jqw3j3nR4CVDZKCY5udoz-Gi7lsxvNDzPUnH0Z1MM?purpose=inline',
+  },
+};
 
 const ptEvidence: ProjectEvidence[] = [
-  { topic: 'Fraudes e pessoas idosas', description: 'Reportagem a selecionar sobre o impacto dos golpes na vida financeira e na confiança de pessoas idosas.', publisher: null, href: null, publishedAt: null },
-  { topic: 'Quando a mensagem parece real', description: 'Reportagem a selecionar sobre falsas identidades, pedidos urgentes e manipulação em mensagens.', publisher: null, href: null, publishedAt: null },
-  { topic: 'Tecnologia e novos golpes', description: 'Reportagem a selecionar sobre o uso de inteligência artificial em fraudes e os desafios da prevenção.', publisher: null, href: null, publishedAt: null },
+  {
+    ...evidenceSources.serasa,
+    publishedLabel: 'Dezembro de 2025',
+    topic: '4 em cada 10 idosos já foram vítimas de golpes financeiros',
+    description: 'Pesquisa da Serasa e Silverguard revela que 40% dos idosos entrevistados já sofreram golpes financeiros. Entre as vítimas, 80% tiveram prejuízo monetário, além de impactos como medo, frustração e ansiedade.',
+  },
+  {
+    ...evidenceSources.pcgo,
+    publishedLabel: '08/09/2025',
+    topic: 'Idosa perde mais de R$ 3,5 mil após mensagem de falsa filha',
+    description: 'Uma criminosa se passou pela filha de uma idosa em um aplicativo de mensagens e solicitou ajuda financeira. A vítima acreditou na identidade falsa e realizou a transferência.',
+  },
+  {
+    ...evidenceSources.cldf,
+    publishedLabel: '18/02/2025',
+    topic: 'Golpistas usam IA para imitar vozes de familiares e enganar idosos',
+    description: 'A Procuradoria de Defesa da Pessoa Idosa alerta para golpes que utilizam inteligência artificial para reproduzir vozes familiares e solicitar dinheiro, tornando as fraudes mais difíceis de reconhecer.',
+  },
 ];
 
 const enEvidence: ProjectEvidence[] = [
-  { topic: 'Fraud and older adults', description: 'Reporting to be selected on the impact of scams on older adults’ finances and confidence.', publisher: null, href: null, publishedAt: null },
-  { topic: 'When a message looks real', description: 'Reporting to be selected on impersonation, urgent requests and manipulation in messages.', publisher: null, href: null, publishedAt: null },
-  { topic: 'Technology and new scams', description: 'Reporting to be selected on the use of artificial intelligence in fraud and the challenges of prevention.', publisher: null, href: null, publishedAt: null },
+  {
+    ...evidenceSources.serasa,
+    publishedLabel: 'December 2025',
+    topic: '4 in 10 older adults have been victims of financial scams',
+    description: 'A Serasa and Silverguard survey found that 40% of the older adults interviewed had experienced financial scams. Among the victims, 80% lost money and also reported effects such as fear, frustration and anxiety.',
+  },
+  {
+    ...evidenceSources.pcgo,
+    publishedLabel: '8 September 2025',
+    topic: 'Older woman loses more than R$3,500 after a message from a fake daughter',
+    description: 'A criminal posed as an older woman’s daughter on a messaging app and asked for financial help. The victim believed the false identity and transferred the money.',
+  },
+  {
+    ...evidenceSources.cldf,
+    publishedLabel: '18 February 2025',
+    topic: 'Scammers use AI to imitate relatives’ voices and deceive older adults',
+    description: 'The Office for the Defense of Older People warns about scams that use artificial intelligence to reproduce relatives’ voices and ask for money, making fraud harder to recognize.',
+  },
 ];
 
 const pt = {
@@ -56,34 +86,15 @@ const pt = {
   description: 'Entenda a proposta do DOld, suas próximas etapas e como apoiar uma ideia de proteção digital para pessoas idosas.',
   common: { newTab: 'abre em nova aba' },
   info: {
-    label: 'Sobre o projeto',
-    title: ['Uma pausa pode proteger', 'uma história inteira.'],
-    description: 'O DOld nasce de uma dúvida cotidiana: em quem confiar quando uma mensagem parece real? Nossa proposta é ajudar pessoas idosas a entender os sinais antes de clicar.',
-    action: 'Entenda a proposta',
-    secondaryAction: 'Quero apoiar',
-    imageAlt: 'Pessoa idosa usando um celular.',
-    imageCaption: 'Mais autonomia para perguntar. Mais clareza para decidir.',
+    statsLabel: 'Dados sobre golpes e acesso digital',
     context: 'O problema que queremos enfrentar',
     contextTitle: 'Por trás de uma mensagem, existe uma vida real.',
-    contextDescription: 'O ponto de partida foi uma experiência familiar: anúncios que pareciam avisos do Gmail e geravam dúvida sobre o que era confiável. O projeto propõe uma forma simples de pedir orientação nesse momento.',
-    dataLabel: 'Um olhar para os dados',
-    pendingValue: 'Em curadoria',
-    pendingSource: 'Fonte e período pendentes',
-    dataNote: 'Os indicadores abaixo aguardam fontes verificadas, período e recorte etário. Nenhum número foi estimado.',
-    metrics: ptMetrics,
+    contextDescription: 'O projeto nasceu de uma experiência em família, quando anúncios que pareciam avisos do Gmail geraram dúvidas sobre o que era confiável. A partir disso, surgiu a ideia de oferecer uma forma simples de pedir orientação nessas situações.',
   },
   evidence: {
     label: 'Embasamento',
     title: ['Uma proposta precisa', 'de evidências.'],
-    description: 'Este espaço reúne as notícias e reportagens que vão contextualizar o problema e orientar a solução.',
-    pending: 'Reportagem em curadoria',
-    pendingSource: 'Fonte ainda não adicionada',
-    read: 'Ler reportagem',
-    previous: 'Reportagem anterior',
-    next: 'Próxima reportagem',
-    carousel: 'Carrossel',
-    position: 'Item {current} de {total}',
-    note: 'Os temas abaixo são pautas para pesquisa. As reportagens e seus links ainda precisam ser selecionados e conferidos.',
+    read: 'Ler notícia original',
     items: ptEvidence,
   },
   project: {
@@ -96,44 +107,55 @@ const pt = {
       { title: 'Entender o alerta', description: 'A IA procuraria sinais de manipulação e consultaria fontes confiáveis quando fosse possível verificar a informação.' },
       { title: 'Decidir com mais clareza', description: 'Receber uma explicação simples e, se quiser, compartilhar a análise com alguém de confiança.' },
     ],
-    note: 'Esses recursos fazem parte da proposta. A IA pode errar e não garante que uma mensagem seja segura.',
   },
   roadmap: {
     label: 'Roadmap',
-    title: ['Uma ideia com propósito.', 'Um caminho para construir.'],
-    description: 'Etapas propostas para evoluir o conceito. Datas, entregas e testes com participantes ainda precisam ser definidos.',
-    status: 'Etapa proposta',
+    title: ['Da ideia à entrega.'],
+    description: 'O caminho que queremos percorrer para transformar uma dúvida real em uma ferramenta simples de orientação.',
+    navigation: 'Navegar pelas etapas do projeto',
+    stage: 'Etapa',
+    current: 'Etapa atual',
+    outcome: 'Resultado esperado',
+    mapLabel: 'Percurso de',
     items: [
-      { title: 'Ouvir e pesquisar', description: 'Conversar com pessoas idosas e familiares, reunir evidências e entender situações reais de dúvida.' },
-      { title: 'Desenhar e prototipar', description: 'Explorar linguagem, acessibilidade e fluxos de conversa antes de desenvolver a solução.' },
-      { title: 'Construir uma primeira versão', description: 'Avaliar a integração com WhatsApp e a análise de mensagens, com atenção à privacidade e aos limites da IA.' },
-      { title: 'Testar e aprender', description: 'Planejar um piloto consentido para avaliar compreensão, utilidade e possíveis erros, ajustando a proposta com os participantes.' },
+      {
+        id: 'ideia',
+        title: 'Ideia e planejamento',
+        description: 'Ouvir pessoas idosas e familiares, entender as situações de dúvida e definir onde o DOld pode ajudar.',
+        outcome: 'Uma proposta clara, com público, problema e prioridades definidos.',
+        stops: ['Escuta das pessoas', 'Pesquisa do problema', 'Definição da proposta', 'Escopo do projeto'],
+      },
+      {
+        id: 'prototipo',
+        title: 'Protótipo',
+        description: 'Desenhar uma conversa fácil de entender e experimentar a experiência antes de começar o desenvolvimento.',
+        outcome: 'Um protótipo navegável para testar os fluxos e ajustar a linguagem.',
+        stops: ['Fluxos de conversa', 'Interface acessível', 'Protótipo navegável', 'Teste de uso'],
+      },
+      {
+        id: 'mvp',
+        title: 'MVP',
+        description: 'Construir uma primeira versão para receber mensagens pelo WhatsApp e oferecer orientações com apoio de fontes confiáveis.',
+        outcome: 'Uma versão funcional para experimentar com um grupo piloto.',
+        stops: ['Entrada no WhatsApp', 'Análise da mensagem', 'Consulta a fontes', 'Orientação simples'],
+      },
+      {
+        id: 'entrega',
+        title: 'Entrega',
+        description: 'Avaliar a experiência com participantes, aplicar os ajustes e preparar a solução para chegar a mais pessoas.',
+        outcome: 'Uma solução pronta para disponibilizar, com orientação de uso e acompanhamento.',
+        stops: ['Piloto com participantes', 'Ajustes da experiência', 'Entrega da solução', 'Escuta contínua'],
+      },
     ],
   },
   figma: {
     label: 'Figma',
     title: ['O cuidado também está', 'na experiência.'],
-    description: 'Queremos uma conversa fácil de ler e entender. O protótipo ajudará a explorar essa experiência antes de ela se tornar um produto.',
-    action: 'Explorar no Figma',
+    action: 'Ir para o Figma',
     pending: 'Link do Figma pendente',
     note: 'O endereço do protótipo ainda não foi adicionado.',
-    previewLabel: 'Estudo de conversa · Ilustrativo',
-    previewName: 'DOld',
-    previewQuestion: 'Recebi uma cobrança por mensagem. Como posso conferir?',
-    previewAnswer: 'Uma cobrança inesperada merece cuidado. Antes de pagar, confirme pelo aplicativo ou site oficial da empresa.',
-    previewHint: 'Uma explicação clara. Um próximo passo compreensível.',
-  },
-  needs: {
-    label: 'Necessidades',
-    title: ['Uma boa ideia cresce', 'com mais gente.'],
-    description: 'Há diferentes formas de contribuir para desenvolver esta proposta.',
-    action: 'Conheça a equipe',
-    items: [
-      { title: 'Pesquisa e escuta', description: 'Ajudar a entender dúvidas, hábitos e necessidades de pessoas idosas, com participação voluntária.' },
-      { title: 'Design acessível', description: 'Contribuir com linguagem simples, legibilidade e experiências que respeitem diferentes níveis de familiaridade digital.' },
-      { title: 'Desenvolvimento', description: 'Colaborar na exploração técnica da IA, da integração com WhatsApp e da proteção de dados.' },
-      { title: 'Avaliação e parcerias', description: 'Ajudar a definir como avaliar a proposta e aproximá-la de quem pode se beneficiar dela.' },
-    ],
+    previewLabel: 'Protótipo DOld',
+    previewTitle: 'Prévia do protótipo DOld no Figma',
   },
   support: {
     label: 'Apoie no IA4Good',
@@ -141,7 +163,6 @@ const pt = {
     description: 'Apoie o DOld no IA4Good e faça parte da construção de uma tecnologia pensada para a autonomia de pessoas idosas.',
     action: 'Apoiar no IA4Good',
     nextStep: 'Você será direcionado à página do projeto no IA4Good para conhecer as formas de apoio disponíveis.',
-    pending: 'O link do projeto no IA4Good ainda não foi adicionado. O acesso ao apoio ficará disponível aqui.',
     backToTop: 'Voltar ao início',
   },
 };
@@ -151,34 +172,15 @@ const en: typeof pt = {
   description: 'Discover the DOld proposal, its next steps and how to support an idea for older adults’ digital safety.',
   common: { newTab: 'opens in a new tab' },
   info: {
-    label: 'About the project',
-    title: ['A pause can protect', 'a lifetime of stories.'],
-    description: 'DOld starts with an everyday question: who can you trust when a message looks real? Our proposal is to help older adults understand the warning signs before clicking.',
-    action: 'Understand the proposal',
-    secondaryAction: 'I want to help',
-    imageAlt: 'An older adult using a mobile phone.',
-    imageCaption: 'More independence to ask. More clarity to decide.',
+    statsLabel: 'Scam and digital access statistics',
     context: 'The problem we want to address',
     contextTitle: 'Behind a message, there is a real life.',
-    contextDescription: 'A family experience sparked the idea: ads that looked like Gmail alerts created uncertainty about what to trust. The project proposes a simple way to ask for guidance at that moment.',
-    dataLabel: 'A closer look at the data',
-    pendingValue: 'Being researched',
-    pendingSource: 'Source and period pending',
-    dataNote: 'The indicators below await verified sources, reporting periods and age groups. No figures have been estimated.',
-    metrics: enMetrics,
+    contextDescription: 'The project grew out of a family experience with ads that looked like Gmail alerts and made it hard to know what to trust. That led to the idea of offering a simple way to ask for guidance in those moments.',
   },
   evidence: {
     label: 'Evidence',
     title: ['A proposal needs', 'evidence.'],
-    description: 'This space brings together the news and reporting that will put the problem in context and inform the solution.',
-    pending: 'Reporting being researched',
-    pendingSource: 'Source not yet added',
-    read: 'Read the article',
-    previous: 'Previous article',
-    next: 'Next article',
-    carousel: 'Carousel',
-    position: 'Item {current} of {total}',
-    note: 'The topics below are research areas. The articles and their links still need to be selected and checked.',
+    read: 'Read the original article',
     items: enEvidence,
   },
   project: {
@@ -191,44 +193,55 @@ const en: typeof pt = {
       { title: 'Understand the warning', description: 'AI would look for signs of manipulation and consult trusted sources when information could be verified.' },
       { title: 'Decide with more clarity', description: 'Receive a simple explanation and, if desired, share the assessment with someone you trust.' },
     ],
-    note: 'These features are part of the proposal. AI can make mistakes and does not guarantee that a message is safe.',
   },
   roadmap: {
     label: 'Roadmap',
-    title: ['An idea with purpose.', 'A path to build it.'],
-    description: 'Proposed steps to develop the concept. Dates, deliverables and participant testing still need to be defined.',
-    status: 'Proposed step',
+    title: ['From idea to delivery.'],
+    description: 'The path we want to follow to turn a real question into a simple tool for guidance.',
+    navigation: 'Navigate the project stages',
+    stage: 'Stage',
+    current: 'Current stage',
+    outcome: 'Expected outcome',
+    mapLabel: 'Route for',
     items: [
-      { title: 'Listen and research', description: 'Talk to older adults and families, gather evidence and understand real situations of uncertainty.' },
-      { title: 'Design and prototype', description: 'Explore language, accessibility and conversation flows before developing the solution.' },
-      { title: 'Build a first version', description: 'Assess WhatsApp integration and message analysis, considering privacy and the limits of AI.' },
-      { title: 'Test and learn', description: 'Plan a consent-based pilot to assess understanding, usefulness and possible errors, refining the proposal with participants.' },
+      {
+        id: 'ideia',
+        title: 'Idea and planning',
+        description: 'Listen to older adults and families, understand moments of uncertainty and define where DOld can help.',
+        outcome: 'A clear proposal with a defined audience, problem and priorities.',
+        stops: ['Listening to people', 'Problem research', 'Defining the proposal', 'Project scope'],
+      },
+      {
+        id: 'prototipo',
+        title: 'Prototype',
+        description: 'Design an easy-to-understand conversation and explore the experience before development begins.',
+        outcome: 'A clickable prototype to test the flows and refine the language.',
+        stops: ['Conversation flows', 'Accessible interface', 'Clickable prototype', 'Usability testing'],
+      },
+      {
+        id: 'mvp',
+        title: 'MVP',
+        description: 'Build a first version to receive messages through WhatsApp and offer guidance supported by reliable sources.',
+        outcome: 'A working version to try with a pilot group.',
+        stops: ['WhatsApp entry point', 'Message analysis', 'Source checking', 'Simple guidance'],
+      },
+      {
+        id: 'entrega',
+        title: 'Delivery',
+        description: 'Evaluate the experience with participants, make adjustments and prepare the solution to reach more people.',
+        outcome: 'A solution ready to release, with usage guidance and ongoing support.',
+        stops: ['Participant pilot', 'Experience refinements', 'Solution delivery', 'Ongoing listening'],
+      },
     ],
   },
   figma: {
     label: 'Figma',
     title: ['Care is also part', 'of the experience.'],
-    description: 'We want a conversation that is easy to read and understand. The prototype will help explore this experience before it becomes a product.',
-    action: 'Explore in Figma',
+    action: 'Go to Figma',
     pending: 'Figma link pending',
     note: 'The prototype address has not been added yet.',
-    previewLabel: 'Conversation study · Illustrative',
-    previewName: 'DOld',
-    previewQuestion: 'I received a payment request in a message. How can I check it?',
-    previewAnswer: 'An unexpected payment request calls for caution. Before paying, check through the company’s official app or website.',
-    previewHint: 'A clear explanation. An understandable next step.',
-  },
-  needs: {
-    label: 'What we need',
-    title: ['A good idea grows', 'with more people.'],
-    description: 'There are different ways to help develop this proposal.',
-    action: 'Meet the team',
-    items: [
-      { title: 'Research and listening', description: 'Help understand older adults’ questions, habits and needs through voluntary participation.' },
-      { title: 'Accessible design', description: 'Contribute plain language, readability and experiences that respect different levels of digital familiarity.' },
-      { title: 'Development', description: 'Collaborate on exploring AI, WhatsApp integration and data protection.' },
-      { title: 'Evaluation and partnerships', description: 'Help define how to evaluate the proposal and connect it with people who could benefit from it.' },
-    ],
+    previewLabel: 'DOld prototype',
+    previewTitle: 'DOld prototype preview in Figma',
   },
   support: {
     label: 'Support us on IA4Good',
@@ -236,7 +249,6 @@ const en: typeof pt = {
     description: 'Support DOld on IA4Good and help build technology designed for older adults’ independence.',
     action: 'Support on IA4Good',
     nextStep: 'You will be taken to the project’s IA4Good page to explore the available ways to support it.',
-    pending: 'The project’s IA4Good link has not been added yet. Access to support will be available here.',
     backToTop: 'Back to top',
   },
 };

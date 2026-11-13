@@ -59,13 +59,6 @@ const pt = {
     description: 'Mais informação para reconhecer golpes, mais tranquilidade para usar a tecnologia e mais segurança para toda a família.',
     action: 'Relembre como funciona',
   },
-  footer: {
-    title: 'Tecnologia a favor da sua autonomia.',
-    description: 'O DOld orienta. Você confirma, decide e se protege.',
-    navigation: 'Navegação do rodapé',
-    project: 'O projeto', how: 'Como funciona', faq: 'Dúvidas',
-    note: 'Projeto conceitual · Demonstração ilustrativa',
-  },
 };
 
 const en: typeof pt = {
@@ -126,13 +119,6 @@ const en: typeof pt = {
     title: ['Before you click,', 'give yourself more information.'],
     description: 'More information to recognise scams, more confidence using technology and more safety for the whole family.',
     action: 'Review how it works',
-  },
-  footer: {
-    title: 'Technology that supports your independence.',
-    description: 'DOld guides. You confirm, decide and protect yourself.',
-    navigation: 'Footer navigation',
-    project: 'The project', how: 'How it works', faq: 'Questions',
-    note: 'Concept project · Illustrative demonstration',
   },
 };
 
