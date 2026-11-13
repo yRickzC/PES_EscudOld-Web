@@ -7,6 +7,7 @@ document.querySelectorAll<HTMLElement>('[data-signals-slider]').forEach(slider =
   if (!track || !controls || !previous || !next || slides.length < 2) return;
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const mobile = window.matchMedia('(width < 40rem)');
   let current = 0;
   let settleTimer: number | undefined;
   const slideOffset = (index: number) => slides[index].offsetLeft - slides[0].offsetLeft;
@@ -17,6 +18,7 @@ document.querySelectorAll<HTMLElement>('[data-signals-slider]').forEach(slider =
   };
 
   const goTo = (index: number, instant = false) => {
+    if (!mobile.matches) return;
     current = Math.max(0, Math.min(slides.length - 1, index));
     updateButtons();
     track.scrollTo({
@@ -27,6 +29,7 @@ document.querySelectorAll<HTMLElement>('[data-signals-slider]').forEach(slider =
 
   const syncFromScroll = () => {
     window.clearTimeout(settleTimer);
+    if (!mobile.matches) return;
     current = slides.reduce((nearest, _, index) =>
       Math.abs(track.scrollLeft - slideOffset(index)) < Math.abs(track.scrollLeft - slideOffset(nearest))
         ? index : nearest, 0);
@@ -41,7 +44,7 @@ document.querySelectorAll<HTMLElement>('[data-signals-slider]').forEach(slider =
   }, { passive: true });
   track.addEventListener('scrollend', syncFromScroll);
   track.addEventListener('keydown', event => {
-    if (event.target !== track) return;
+    if (!mobile.matches || event.target !== track) return;
     let target: number;
     switch (event.key) {
       case 'ArrowLeft': target = current - 1; break;
@@ -54,7 +57,24 @@ document.querySelectorAll<HTMLElement>('[data-signals-slider]').forEach(slider =
     goTo(target);
   });
 
-  new ResizeObserver(() => goTo(current, true)).observe(track);
-  controls.hidden = false;
-  updateButtons();
+  const updateMode = () => {
+    window.clearTimeout(settleTimer);
+    const focusWasInControls = controls.contains(document.activeElement);
+    controls.hidden = !mobile.matches;
+    if (mobile.matches) {
+      track.tabIndex = 0;
+      goTo(current, true);
+    } else {
+      track.scrollTo({ left: 0, behavior: 'instant' });
+      track.removeAttribute('tabindex');
+      if (focusWasInControls) {
+        track.tabIndex = -1;
+        track.focus({ preventScroll: true });
+      }
+    }
+  };
+
+  mobile.addEventListener('change', updateMode);
+  new ResizeObserver(updateMode).observe(track);
+  updateMode();
 });
